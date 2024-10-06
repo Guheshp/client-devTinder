@@ -4,6 +4,9 @@ import axios from "axios"
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/redux/slices/userSlice'
 import { Base_URL } from '../utils/helper/constant'
+import toast from 'react-hot-toast'
+import { validateLogin } from '../utils/validate/validateLogin'
+
 
 const Login = () => {
 
@@ -11,7 +14,20 @@ const Login = () => {
     const [password, setPassword] = useState("Charger@123")
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
     const handleLoginSubmit = async () => {
+
+        const errorMessage = validateLogin(emailId, password)
+        if (errorMessage) {
+            // return toast.(errorMessage)
+            return toast(
+                errorMessage,
+                {
+                    icon: '👉🏻',
+                    duration: 6000,
+                },
+            );
+        }
         try {
             const res = await axios.post(Base_URL + `/login`,
                 { emailId, password },
@@ -21,9 +37,13 @@ const Login = () => {
             navigate("/")
             // console.log(userData)
         } catch (error) {
-            console.log(error)
+            console.error(error)
+            return toast.error(
+                error?.response?.data?.message || 'Login failed, please try again.'
+            );
         }
     }
+
 
     return (
         <div className='flex justify-center my-20'>
@@ -63,7 +83,6 @@ const Login = () => {
                     <div className='text-center'>
                         <button className='btn btn-primary' onClick={handleLoginSubmit}>
                             Login
-
                         </button>
                     </div>
 

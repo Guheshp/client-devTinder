@@ -10,17 +10,19 @@ import Profile from './components/Profile'
 import { Provider } from 'react-redux'
 import store from './utils/redux/appStore'
 import Feed from './components/Feed'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
   return (
     <>
+      <Toaster position="bottom-left" reverseOrder={false} />
       <Provider store={store}>
         <BrowserRouter basename='/'>
           <Routes>
             <Route path='/' element={<Body />} >
               <Route path='/' element={<Feed />} />
-              <Route path='/Login' element={<Login />} />
+              <Route path='/login' element={<Login />} />
               <Route path='/profile' element={<Profile />} />x
             </Route>
           </Routes>

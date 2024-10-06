@@ -23,7 +23,9 @@
 - login and  data is coming properly in redux 
 - navbar sgould be updated with photo
 - refactor code to add constant file + 
-
+- should not have access to login page without authentication
+- if token is not present redirect to login page
+- logout 
 
 
  
