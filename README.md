@@ -28,6 +28,10 @@
 - logout,
 - Get the feed nd add feed to the store 
 - build the user card on feed
+- edit feature 
+- tost message 
+- new page: see all my connection
+- new page: see all my request
 
 
  

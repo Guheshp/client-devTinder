@@ -4,7 +4,7 @@ import { DEFAULT_IMG } from '../utils/helper/constant';
 
 const UserCard = ({ user }) => {
 
-    console.log("user..", user)
+    // console.log("user..", user)
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);

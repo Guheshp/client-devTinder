@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/redux/slices/userSlice'
+import toast from 'react-hot-toast'
 
 const ProfilePage = ({ user }) => {
 
@@ -15,6 +16,9 @@ const ProfilePage = ({ user }) => {
     const [gender, setGender] = useState(user.gender)
     const [skills, setskills] = useState(user.skills)
     const [photo, setPhoto] = useState(user.photo)
+    const [showTost, setShowTost] = useState(false)
+    const [error, setError] = useState("")
+    const [sucess, setsuccess] = useState("")
 
     const dispatch = useDispatch()
 
@@ -24,8 +28,26 @@ const ProfilePage = ({ user }) => {
             const res = await axios.post(Base_URL + "/profile/edit",
                 { firstName, lastName, age, gender, skills, photo }, { withCredentials: true });
             dispatch(addUser(res?.data?.data))
+            setsuccess("Profile saved successfully")
+            setError("")
+            setShowTost(true)
+            setTimeout(() => {
+                setShowTost(false)
+            }, 3000)
+
         } catch (error) {
-            console.log(error)
+            console.error(error)
+            let message = "ERROR: While updateing profile!"
+            if (error?.response?.data?.error) {
+                message = error.response.data.error;
+            }
+            setError(message)
+            setsuccess("")
+            setShowTost(true)
+            setTimeout(() => {
+                setShowTost(false)
+            }, 3000)
+
         }
     }
 
@@ -33,7 +55,23 @@ const ProfilePage = ({ user }) => {
         <div className='flex justify-center my-8'>
             <div className='flex justify-center mx-8'>
                 <div className="card bg-base-300 w-96 shadow-xl">
+
                     <h1 className='text-xl font-medium text-center mt-4'>Edit Profile</h1>
+                    {showTost &&
+                        <div className="toast toast-top toast-center">
+                            {error &&
+                                <div className="alert alert-info">
+                                    <span>{error}</span>
+                                </div>
+                            }
+                            {sucess &&
+                                <div className="alert alert-success">
+                                    <span>Profile saved Successfully</span>
+                                </div>
+                            }
+
+                        </div>
+                    }
                     <div className="card-body py-1">
                         <label className="form-control w-full max-w-xs">
                             <div className="label">

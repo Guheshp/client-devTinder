@@ -11,6 +11,8 @@ import { Provider } from 'react-redux'
 import store from './utils/redux/appStore'
 import Feed from './components/Feed'
 import { Toaster } from 'react-hot-toast'
+import Connections from './components/Connections'
+import Request from './components/Request'
 
 
 function App() {
@@ -23,7 +25,9 @@ function App() {
             <Route path='/' element={<Body />} >
               <Route path='/' element={<Feed />} />
               <Route path='/login' element={<Login />} />
-              <Route path='/profile' element={<Profile />} />x
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/connections' element={<Connections />} />
+              <Route path='/requests' element={<Request />} />
             </Route>
           </Routes>
         </BrowserRouter>
