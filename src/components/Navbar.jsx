@@ -9,7 +9,6 @@ import { removeUser } from '../utils/redux/slices/userSlice'
 const Navbar = () => {
     const userData = useSelector((store) => store.user.user)
     const navigate = useNavigate()
-
     const dispatch = useDispatch()
 
     const handleLogout = async () => {

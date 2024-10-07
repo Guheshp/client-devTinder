@@ -29,13 +29,13 @@ const Connections = () => {
         fetchConnection()
     }, [])
     if (!connectionData) return;
-    if (connectionData.length === 0) return <h1>No connection found</h1>
+    if (connectionData.length === 0) return <h1 className='text-center mt-12'>No connection found</h1>
     return (
         <div>
             <div className="flex justify-center items-center">
                 <h1 className="text-2xl mt-2 border-black bg-slate-950 inline-block align-middle rounded-md p-3">Connections</h1>
             </div>
-            <div className='flex justify-center'>
+            <div className='flex flex-col items-center'>
                 {connectionData && connectionData.map((connection) => {
                     const { firstName, lastName, age, gender, skills, photo } = connection
                     return (

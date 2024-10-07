@@ -7,6 +7,7 @@ import UserCard from './UserCard'
 const Profile = () => {
 
     const userData = useSelector((store) => store.user.user)
+    console.log("userData!..", userData)
     return (
         <>
             {userData &&

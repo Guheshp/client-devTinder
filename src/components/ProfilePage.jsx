@@ -8,7 +8,7 @@ import { addUser } from '../utils/redux/slices/userSlice'
 import toast from 'react-hot-toast'
 
 const ProfilePage = ({ user }) => {
-
+    console.log("usershavs..", user)
 
     const [firstName, setFirstName] = useState(user.firstName)
     const [lastName, setLastName] = useState(user.lastName)
@@ -16,6 +16,7 @@ const ProfilePage = ({ user }) => {
     const [gender, setGender] = useState(user.gender)
     const [skills, setskills] = useState(user.skills)
     const [photo, setPhoto] = useState(user.photo)
+    const [_id, setId] = useState(user._id)
     const [showTost, setShowTost] = useState(false)
     const [error, setError] = useState("")
     const [sucess, setsuccess] = useState("")
@@ -163,7 +164,7 @@ const ProfilePage = ({ user }) => {
 
                 </div>
             </div>
-            <UserCard user={{ firstName, lastName, age, gender, skills, photo }} />
+            <UserCard user={{ _id, firstName, lastName, age, gender, skills, photo }} />
 
         </div>
     )

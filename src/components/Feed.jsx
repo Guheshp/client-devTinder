@@ -9,9 +9,9 @@ const Feed = () => {
     const dispatch = useDispatch()
     const feed = useSelector((store) => store.feed.feed)
     const getFeed = async () => {
-        if (feed) return;
+        // if (feed) return;
         try {
-            const res = await axios.get(Base_URL + "/feed")
+            const res = await axios.get(Base_URL + "/page/feed", { withCredentials: true })
             const data = res?.data?.data
             dispatch(addFeed(data))
         } catch (error) {
@@ -22,12 +22,15 @@ const Feed = () => {
     useEffect(() => {
         getFeed()
     }, [])
+    if (!feed) return;
 
+
+    if (feed.length <= 0) return <h1 className='text-center mt-10 text-2xl'>No new Ueres Found</h1>
     return (
         <div>
             {feed &&
                 <div className='flex justify-center my-14'>
-                    <UserCard user={feed[6]} />
+                    <UserCard user={feed[0]} />
                 </div>
             }
         </div>

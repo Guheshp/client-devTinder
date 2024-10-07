@@ -32,6 +32,9 @@
 - tost message 
 - new page: see all my connection
 - new page: see all my request
+- feature: Accept/reject api completed
+- feature: ignore/accepted api completed
+- 
 
 
  
