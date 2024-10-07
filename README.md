@@ -25,7 +25,9 @@
 - refactor code to add constant file + 
 - should not have access to login page without authentication
 - if token is not present redirect to login page
-- logout 
+- logout,
+- Get the feed nd add feed to the store 
+- build the user card on feed
 
 
  

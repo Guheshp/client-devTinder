@@ -8,7 +8,6 @@ import { removeUser } from '../utils/redux/slices/userSlice'
 
 const Navbar = () => {
     const userData = useSelector((store) => store.user.user)
-    console.log("userData", userData)
     const navigate = useNavigate()
 
     const dispatch = useDispatch()

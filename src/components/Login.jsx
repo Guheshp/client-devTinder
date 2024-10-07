@@ -35,7 +35,6 @@ const Login = () => {
             const userData = res?.data?.data
             dispatch(addUser(userData))
             navigate("/")
-            // console.log(userData)
         } catch (error) {
             console.error(error)
             return toast.error(
