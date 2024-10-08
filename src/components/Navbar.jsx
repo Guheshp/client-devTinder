@@ -24,9 +24,9 @@ const Navbar = () => {
     }
     return (
         <div>
-            <div className="navbar bg-base-300">
+            <div className="navbar bg-gradient-to-b from-base-300 pt-5">
                 <div className="flex-1">
-                    <Link to={`/`} className="btn btn-ghost text-xl">DevTinder 🚀</Link>
+                    <Link to={`/`} className="btn btn-ghost text-white text-3xl font-bold">Dev-Tinder 🚀</Link>
                 </div>
                 {userData ?
                     (<div className="flex-none gap-2">
@@ -57,7 +57,14 @@ const Navbar = () => {
                                 <li><a onClick={handleLogout}>Logout</a></li>
                             </ul>
                         </div>
-                    </div>) : null}
+                    </div>) :
+                    (
+                        <div>
+                            <button className=''><Link className='p-2 rounded-lg hover:bg-slate-300 bg-white text-black px-8 text-lg font-semibold me-4' to={"/login"}>
+                                Log in
+                            </Link></button>
+                        </div>
+                    )}
 
             </div>
         </div>

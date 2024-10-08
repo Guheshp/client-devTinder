@@ -7,6 +7,7 @@ import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { addUser } from '../utils/redux/slices/userSlice'
 import toast from 'react-hot-toast'
+import HomePage from './HomePage'
 
 const Body = () => {
     const dispatch = useDispatch()
@@ -21,13 +22,7 @@ const Body = () => {
             dispatch(addUser(res?.data))
         } catch (error) {
             if (error.status === 401) {
-                navigate("/login")
-                toast("Please Login!", {
-                    duration: 4000,
-                    position: "top-right",
-                    icon: "😁",
-                    style: { background: "#fff", color: "#000000" },
-                });
+                navigate("/")
                 console.error(error)
             }
         }
@@ -36,7 +31,7 @@ const Body = () => {
         fetchUser();
     }, [])
     return (
-        <div>
+        <div className='bg-slate-300'>
             <Navbar />
             <Outlet />
             <Footer />

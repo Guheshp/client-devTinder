@@ -11,11 +11,9 @@ const Profile = () => {
     return (
         <>
             {userData &&
-
                 <div className=''>
                     <ProfilePage user={userData} />
                 </div>
-
             }
         </>
 
