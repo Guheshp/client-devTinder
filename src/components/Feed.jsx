@@ -1,11 +1,13 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { addFeed } from '../utils/redux/slices/feedSlice'
 import UserCard from './UserCard'
+import Skeleton from './Skeleton'
 
 const Feed = () => {
+    const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const feed = useSelector((store) => store.feed.feed)
     const getFeed = async () => {
@@ -21,18 +23,35 @@ const Feed = () => {
 
     useEffect(() => {
         getFeed()
+        setTimeout(() => {
+            setLoading(false)
+        }, 3000)
     }, [])
-    if (!feed) return;
+
+    if (!feed) return (
+        <div className='my-14 flex justify-center'>
+            <Skeleton />
+        </div>
+    )
 
 
     if (feed.length <= 0) return <h1 className='text-center mt-10 text-2xl'>No new Ueres Found</h1>
     return (
         <div>
-            {feed &&
-                <div className='flex justify-center my-14'>
-                    <UserCard user={feed[0]} />
-                </div>
+            {loading ?
+                <div className='my-14 flex justify-center'>
+                    <Skeleton />
+                </div> :
+                <>
+                    {feed &&
+                        <div className='flex justify-center my-14'>
+                            <UserCard user={feed[0]} />
+                        </div>
+                    }
+
+                </>
             }
+
         </div>
 
     )

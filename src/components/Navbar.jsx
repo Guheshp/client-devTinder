@@ -15,13 +15,14 @@ const Navbar = () => {
         try {
             const res = await axios.post(Base_URL + "/logout", {}, { withCredentials: true })
             dispatch(removeUser())
-            navigate("/login")
+            navigate("/")
             return toast.success("Logged Out!")
         } catch (error) {
             console.error(error)
             return toast.error(error)
         }
     }
+
     return (
         <div>
             <div className="navbar bg-gradient-to-b from-base-300 pt-5">

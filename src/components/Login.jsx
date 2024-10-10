@@ -37,7 +37,7 @@ const Login = () => {
                 { withCredentials: true })
             const userData = res?.data?.data
             dispatch(addUser(userData))
-            navigate("/")
+            navigate("/feed")
         } catch (error) {
             console.error(error)
             return toast.error(
@@ -45,7 +45,6 @@ const Login = () => {
             );
         }
     }
-
 
     const handleSignUp = async () => {
         try {
