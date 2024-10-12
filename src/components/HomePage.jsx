@@ -12,12 +12,12 @@ const HomePage = () => {
         navigate("/login")
     }
     return (
-        <div className='m-10'>
+        <div className='m-10 sm:m-3'>
             <div className='text-center ' >
-                <h1 className="text-7xl font-extrabold bg-gradient bg-clip-text text-transparent">
+                <h1 className="text-3xl font-extrabold bg-gradient bg-clip-text text-transparent md:text-6xl">
                     Start Something Epic <span className="text-transparent">🚀</span>
                 </h1>
-                <button className='my-6 border py-2 px-5 rounded-xl bg-custom-gradient text-lg text-white transform transition duration-300 hover:scale-105 shadow-xl' onClick={handleClickOnCreateBtn}>Create an Account</button>
+                <button className='my-6 border  rounded-xl bg-custom-gradient text-lg text-white transform transition duration-300 hover:scale-105 shadow-xl md:py-2 md:px-5 sm:p-2 sm:px-4  p-2 px-3' onClick={handleClickOnCreateBtn}>Create an Account</button>
             </div>
             <hr className='my-6' />
 
