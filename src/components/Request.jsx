@@ -40,7 +40,7 @@ const Request = () => {
     return (
         <div className=''>
             <div className="flex justify-center items-center">
-                <h1 className="text-2xl mt-2 border-black bg-slate-950 inline-block align-middle rounded-md p-3">Request</h1>
+                <h1 className="text-2xl  btn rounded-md">Request</h1>
             </div>
             <div className="flex flex-col items-center">
                 {requestData && requestData.map((request) => {

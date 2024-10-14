@@ -38,7 +38,7 @@ const UserCard = ({ user }) => {
             <div className="card bg-base-300 w-96 shadow-xl">
                 <figure>
                     <img
-                        className='rounded-lg '
+                        className='rounded-lg w-52'
                         src={photo || DEFAULT_IMG}
                         alt="Shoes" />
                 </figure>

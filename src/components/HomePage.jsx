@@ -13,7 +13,7 @@ const HomePage = () => {
     }
     return (
         <div className='m-10 sm:m-3'>
-            <div className='text-center ' >
+            <div className='text-center my-20' >
                 <h1 className="text-3xl font-extrabold bg-gradient bg-clip-text text-transparent md:text-6xl">
                     Start Something Epic <span className="text-transparent">🚀</span>
                 </h1>

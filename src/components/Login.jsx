@@ -23,12 +23,9 @@ const Login = () => {
         const errorMessage = validateLogin(emailId, password)
         if (errorMessage) {
             // return toast.(errorMessage)
-            return toast(
-                errorMessage,
-                {
-                    icon: '👉🏻',
-                    duration: 6000,
-                },
+            return toast.error(
+                errorMessage
+
             );
         }
         try {

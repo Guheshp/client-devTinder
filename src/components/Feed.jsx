@@ -22,8 +22,9 @@ const Feed = () => {
     }
 
     useEffect(() => {
-        getFeed()
+
         setTimeout(() => {
+            getFeed()
             setLoading(false)
         }, 3000)
     }, [])

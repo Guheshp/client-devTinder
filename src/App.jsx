@@ -14,11 +14,13 @@ import { Toaster } from 'react-hot-toast'
 import Connections from './components/Connections'
 import Request from './components/Request'
 import HomePage from './components/HomePage'
+import ThemeToggle from './components/ThemeToggle'
 
 
 function App() {
   return (
     <Provider store={store}>
+
       <Toaster position="bottom-left" reverseOrder={false} />
       <Main />
     </Provider>
