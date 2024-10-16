@@ -2,9 +2,11 @@ import React from 'react';
 import { STACK_USER } from '../utils/helper/Info';
 
 const FeedBackCard = () => {
+
     const theme = localStorage.getItem("theme");
 
     return (
+
         <div className='text-center py-8 mt-10'>
             <div className="">
                 <div className={`stats shadow flex overflow-x-scroll ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
@@ -23,6 +25,7 @@ const FeedBackCard = () => {
                 </div>
             </div>
         </div>
+
     );
 };
 

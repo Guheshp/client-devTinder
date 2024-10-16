@@ -37,12 +37,13 @@ const Navbar = () => {
 
     return (
         <div>
-            <div className="navbar bg-gradient-to-b from-base-300 pt-5">
+            <div className="navbar bg-gradient-to-b from-neutral-950  p-5 fixed top-0 z-50 bg-opacity-90 ">
+
                 <div className="flex-1">
 
                     <Link
                         to={`/`}
-                        className="btn btn-ghost text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold"
+                        className="btn btn-ghost text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white"
                     >
                         Dev-Tinder 🚀
                     </Link>
@@ -50,24 +51,24 @@ const Navbar = () => {
                     <div onMouseEnter={setUpOnHover}
                         onMouseLeave={setUpOnLeave}>
                         <Link
-                            className={`px-2 text-xl ${learnToggle ? 'text-red-500  underline' : 'hover:text-red-500'}`}
+                            className={`px-2 text-xl ${learnToggle ? 'text-red-500 underline' : 'text-white'}`}
                         >
                             Learn
                         </Link>
 
 
                         {learnToggle &&
-                            <div className='absolute ml-4  bg-slate-900 bg-opacity-50'>
-                                <ul className='ml-8 mt-2'>
-                                    <li className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                            <div className='absolute border  bg-opacity-50'>
+                                <ul className='ml mt-1'>
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b> DSA roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
 
                                             </button>
                                         </span>
-                                    ))}>DSA</li>
-                                    <li className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    ))}>Data Strycture and Algorithm</li>
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b> MERN Stack roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -75,7 +76,7 @@ const Navbar = () => {
                                             </button>
                                         </span>
                                     ))}>MERN Stack</li>
-                                    <li className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b>Java Spring roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -83,7 +84,7 @@ const Navbar = () => {
                                             </button>
                                         </span>
                                     ))}>Java Spring</li>
-                                    <li className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b>Python Django roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -94,18 +95,18 @@ const Navbar = () => {
                                 </ul>
                             </div>
                         }
-
-
                     </div>
 
-                    <Link className='px-2 text-xl  hover:text-red-500 hover:underline'>
+                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline'>
                         Developers
                     </Link>
-                    <Link className='px-2 text-xl  hover:text-red-500 hover:underline'>
+                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline'>
                         Support
                     </Link>
                 </div>
+
                 <ThemeToggle />
+
                 {userData ? (
                     <div className="flex-none gap-2">
                         <p className="hidden sm:block btn btn-ghost label-text pt-3">

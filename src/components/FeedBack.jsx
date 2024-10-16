@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const FeedBack = ({ userData, BUTTON_IMAGE }) => {
     const theme = localStorage.getItem("theme");
+
 
     const cardClassName = `card card-compact shadow-xl lg:w-96 md:w-80 sm:w-64 w-full ${theme === "dark" ? "bg-white text-black" : "bg-slate-700 text-white"
         }`;
@@ -10,7 +11,6 @@ const FeedBack = ({ userData, BUTTON_IMAGE }) => {
 
     return (
         <ul className="timeline timeline-vertical">
-            {/* First Feedback */}
             <li>
                 <div className="timeline-start timeline-box border-none">
                     <div className={cardClassName}>

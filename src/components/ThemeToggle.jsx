@@ -1,13 +1,15 @@
 import { SunIcon } from '@radix-ui/react-icons';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ThemeToggle = () => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const navigate = useNavigate()
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-    }, [theme]);
+    }, [theme, navigate]);
 
     const toggleTheme = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
