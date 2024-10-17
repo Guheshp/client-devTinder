@@ -27,10 +27,23 @@ const HomePage = () => {
 
     if (!userData) {
         return (
-            <div className='flex flex-col justify-center items-center h-screen'>
-                <p className="text-2xl font-semibold mb-4">Hi Developer,</p>
-                <p className="text-lg">Hang tight! We’re fetching your home page data...</p>
-                <span className="loading loading-spinner loading-lg mt-4"></span>
+
+            <div
+                className="hero h-screen bg-gradient-to-b from-neutral-950 to-transparent fixed top-0 left-0 w-full -z-10"
+                style={{
+                    backgroundImage: "url(https://images.pexels.com/photos/5981929/pexels-photo-5981929.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backdropFilter: 'blur(100px)',
+                }}
+            >
+                <div className="relative  z-10 top-0">
+                    <div className=' mt-52 items-center h-screen'>
+                        {/* <p className="text-lg">Hang tight! </p> */}
+                        <span className="loading loading-spinner loading-lg mt-96"></span>
+
+                    </div>
+                </div>
             </div>
         );
     }
@@ -49,13 +62,13 @@ const HomePage = () => {
                     <div className="relative z-10"></div>
                 </div>
 
-                <div className='z-50 '>
+                <div className=' '>
                     <div className="h-screen flex justify-center items-center text-neutral-content text-center">
-                        <div>
-                            <h1 className="text-2xl font-extrabold text-white  md:text-7xl h-[77px] ">
+                        <div className='bg-black bg-opacity-70 py-8 rounded'>
+                            <h1 className="text-2xl font-extrabold text-white  md:text-6xl h-[77px] ">
                                 Start Something Epic<span >.</span>
                             </h1>
-                            <p className='mx-auto my-2 w-3/6 text-lg text-neutral-950 font-semibold'>
+                            <p className='mx-auto my-2 w-3/6 text-lg text-white font-semibold'>
                                 "A platform that connects developers through a matching system, allowing them to find and collaborate on projects based on shared skills and interests. Users can create profiles to showcase their work, participate in discussions, and engage with others to build valuable networking opportunities."
                                 <span className='font-semibold text-lg bg-gradient bg-clip-text text-transparent'> - DevTinder</span>
                             </p>
@@ -68,7 +81,7 @@ const HomePage = () => {
                 </div>
 
             </div>
-            <div className='bg-neutral-950  py-8'>
+            <div className='bg-neutral-950  py-8 z-50'>
                 {/* <FeedBack userData={userData} BUTTON_IMAGE={BUTTON_IMAGE} /> */}
                 <div className='px-20'>
                     <Comments />

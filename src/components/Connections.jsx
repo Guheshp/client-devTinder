@@ -3,6 +3,7 @@ import axios from "axios"
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConnection } from '../utils/redux/slices/connectionSlice'
+import { Link } from 'react-router-dom'
 
 const Connections = () => {
     const dispatch = useDispatch()
@@ -29,10 +30,24 @@ const Connections = () => {
         fetchConnection()
     }, [])
     if (!connectionData) return;
-    if (connectionData.length === 0) return <h1 className='text-center mt-12'>No connection found</h1>
+    if (connectionData.length === 0) return (
+        <div className='h-screen'>
+            <div className='flex flex-col justify-center items-center mt-24'>
+                <h1 className='text-center text-2xl font-bold'>No Connections Found</h1>
+                <p className='text-center text-gray-600 mt-2'>You will receive connections when the person accepts your request.</p>
+                <button className='btn mt-10'>
+                    <Link to={`/feed`}>
+                        Home
+                    </Link>
+                </button>
+            </div>
+        </div>
+    )
+
+
     return (
-        <div>
-            <div className="flex justify-center items-center">
+        <div className='h-screen'>
+            <div className="flex justify-center items-center mt-24">
                 <h1 className="text-2xl btn rounded-md ">Connections</h1>
             </div>
             <div className='flex flex-col items-center'>

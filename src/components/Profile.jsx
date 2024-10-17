@@ -10,11 +10,13 @@ const Profile = () => {
     console.log("userData!..", userData)
     return (
         <>
-            {userData &&
-                <div className=''>
-                    <ProfilePage user={userData} />
-                </div>
-            }
+            <div className='h-screen mt-24'>
+                {userData &&
+                    <div className=''>
+                        <ProfilePage user={userData} />
+                    </div>
+                }
+            </div>
         </>
 
     )

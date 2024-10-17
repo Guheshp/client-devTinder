@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRequest, removeRequest } from '../utils/redux/slices/requestSlice'
+import { Link } from 'react-router-dom'
 
 const Request = () => {
     const dispatch = useDispatch()
@@ -36,7 +37,21 @@ const Request = () => {
         fetchRequest()
     }, [])
     if (!requestData) return
-    if (requestData.length === 0) return <h1 className='text-center mt-12'>No connection found</h1>
+    if (requestData.length === 0) return (
+        <div className='h-screen'>
+            <div className='flex flex-col justify-center items-center mt-24'>
+                <h1 className='text-center text-2xl font-bold'>No Requests Found</h1>
+                <p className='text-center text-gray-600 mt-2'>If someone is interested in your profile, they will send you a request.</p>
+                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
+                    <Link to={`/feed`} className='no-underline'>
+                        Home
+                    </Link>
+                </button>
+            </div>
+
+        </div>
+    )
+
     return (
         <div className=''>
             <div className="flex justify-center items-center">

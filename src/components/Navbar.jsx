@@ -37,13 +37,13 @@ const Navbar = () => {
 
     return (
         <div>
-            <div className="navbar bg-gradient-to-b from-neutral-950  p-5 fixed top-0 z-50 bg-opacity-90 ">
+            <div className="navbar bg-gradient-to-b from-neutral-950  p-4 fixed top-0 z-30 bg-opacity-90 ">
 
                 <div className="flex-1">
 
                     <Link
                         to={`/`}
-                        className="btn btn-ghost text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white"
+                        className="btn btn-ghost text-xl sm:text-1xl md:text-2xl lg:text-3xl font-bold text-white"
                     >
                         Dev-Tinder 🚀
                     </Link>
@@ -58,9 +58,9 @@ const Navbar = () => {
 
 
                         {learnToggle &&
-                            <div className='absolute border  bg-opacity-50'>
+                            <div className='absolute  bg-opacity-50'>
                                 <ul className='ml mt-1'>
-                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-black p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b> DSA roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -68,7 +68,7 @@ const Navbar = () => {
                                             </button>
                                         </span>
                                     ))}>Data Strycture and Algorithm</li>
-                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-black p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b> MERN Stack roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -76,7 +76,7 @@ const Navbar = () => {
                                             </button>
                                         </span>
                                     ))}>MERN Stack</li>
-                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-black p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b>Java Spring roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
@@ -84,7 +84,7 @@ const Navbar = () => {
                                             </button>
                                         </span>
                                     ))}>Java Spring</li>
-                                    <li role='button' className='text-white text-lg font-semibold hover:text-red-500 p-1' onClick={() => toast((t) => (
+                                    <li role='button' className='text-white text-lg font-semibold hover:text-black p-1' onClick={() => toast((t) => (
                                         <span>
                                             Still working on it,😁<b>Python Django roadmap will be done soon.</b>
                                             <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>

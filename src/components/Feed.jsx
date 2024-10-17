@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFeed } from '../utils/redux/slices/feedSlice'
 import UserCard from './UserCard'
 import Skeleton from './Skeleton'
+import SideProfile from './SideProfile'
+import RightFeed from './RightFeed'
 
 const Feed = () => {
     const [loading, setLoading] = useState(true)
@@ -26,29 +28,40 @@ const Feed = () => {
         setTimeout(() => {
             getFeed()
             setLoading(false)
-        }, 3000)
+        }, 1000)
     }, [])
 
     if (!feed) return (
-        <div className='my-14 flex justify-center'>
-            <Skeleton />
+        <div className='h-screen flex justify-center items-center mt-42'>
+            <div className='my-14 flex justify-center'>
+                <Skeleton />
+            </div>
         </div>
     )
 
 
     if (feed.length <= 0) return <h1 className='text-center mt-10 text-2xl'>No new Ueres Found</h1>
     return (
-        <div>
+        <div className='flex justify-center items-center mt-14'>
             {loading ?
-                <div className='my-14 flex justify-center'>
+                <div className=' flex justify-center'>
                     <Skeleton />
                 </div> :
                 <>
-                    {feed &&
-                        <div className='flex justify-center my-14'>
-                            <UserCard user={feed[0]} />
-                        </div>
-                    }
+                    <div className='w-9/12'>
+
+                        {feed &&
+                            <div className='flex  my-14 gap-6 '>
+                                <div className='w-80'>
+                                    <SideProfile />
+                                </div>
+                                <UserCard user={feed[0]} />
+                                <div className='w-80 h-[530px] overflow-y-auto'>
+                                    <RightFeed />
+                                </div>
+                            </div>
+                        }
+                    </div>
 
                 </>
             }

@@ -7,13 +7,13 @@ const FeedBackCard = () => {
 
     return (
 
-        <div className='text-center py-8 mt-10'>
+        <div className='text-center py-6 bottom-0 mt-10'>
             <div className="">
-                <div className={`stats shadow flex overflow-x-scroll ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+                <div className={`stats shadow flex overflow-x-scroll ${theme === "dark" ? "bg-neutral-900 text-white" : "bg-white text-black"}`}>
                     {STACK_USER.map((user) => (
                         <div className="stat" key={user.firstName}>
                             <div className="justify-center flex">
-                                <img className='w-28 rounded' src={user?.photoUrl} alt="" />
+                                <img className='w-20 rounded' src={user?.photoUrl} alt="" />
                             </div>
                             <div className={`stat-desc w-40 mt-2 ${theme === "dark" ? "text-white" : "text-black"}`}>
                                 <p className={`stat-desc w-40 mt-2 text-lg ${theme === "dark" ? "text-white" : "text-black"}`}>{user.firstName} {user.lastName}</p>

@@ -35,24 +35,25 @@ const UserCard = ({ user }) => {
 
     return (
         <div>
-            <div className="card bg-base-300 w-96 shadow-xl">
+            <div className="card bg-base-300 w-[396px] shadow-xl">
                 <figure>
                     <img
-                        className='rounded-lg w-52'
+                        className='rounded-lg w-52 mt-5'
                         src={photo || DEFAULT_IMG}
                         alt="Shoes" />
                 </figure>
                 <div className="card-body">
                     <h2 className="card-title">{capitalizeFirstLetter(firstName) + " " + capitalizeFirstLetter(lastName)}</h2>
                     <p className='m-0'>Age: {age} Year</p>
-                    <p className='m-0'>id: {_id}</p>
                     <p className='m-0'>Skills: {skills}</p>
-                    <div className="card-actions justify-center">
+                    <div className="card-actions justify-center my-10 gap-6">
                         <button className="btn btn-secondary"
-                            onClick={() => handleSendRequest("ignored", _id)}>Ignore</button>
+                            onClick={() => handleSendRequest("ignored", _id)}>Ignore
+                        </button>
 
                         <button className="btn btn-primary"
-                            onClick={() => handleSendRequest("intrested", _id)}>Intrested</button>
+                            onClick={() => handleSendRequest("intrested", _id)}>Intrested
+                        </button>
                     </div>
                 </div>
             </div>
