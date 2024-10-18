@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
-import store from './utils/redux/appStore';
 import { Toaster } from 'react-hot-toast';
 import Body from './components/Body';
 import Feed from './components/Feed';
@@ -11,13 +10,18 @@ import Connections from './components/Connections';
 import Request from './components/Request';
 import Navbar from './components/Navbar'; // Assuming you want to use this
 import HomePage from './components/HomePage';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor, store } from './utils/redux/appStore';
+
 
 
 function App() {
   return (
     <Provider store={store}>
-      <Toaster position="bottom-left" reverseOrder={false} />
-      <Main />
+      <PersistGate loading={null} persistor={persistor}>
+        <Toaster position="bottom-left" reverseOrder={false} />
+        <Main />
+      </PersistGate>
     </Provider>
   );
 }
@@ -28,7 +32,6 @@ function Main() {
   return (
     <BrowserRouter basename='/'>
       <Navbar />
-
       <Routes>
         <Route path='/' element={userData ? <Navigate to="/feed" /> : <HomePage />} />
         <Route path='/feed' element={<Feed />} />

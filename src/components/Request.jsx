@@ -36,7 +36,21 @@ const Request = () => {
     useEffect(() => {
         fetchRequest()
     }, [])
-    if (!requestData) return
+    if (!requestData) return (
+        <div className='h-screen'>
+            <div className='flex flex-col justify-center items-center mt-24'>
+                <h1 className='text-center text-2xl font-bold'>No Requests Found</h1>
+                <p className='text-center text-gray-600 mt-2'>If someone is interested in your profile, they will send you a request.</p>
+                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
+                    <Link to={`/feed`} className='no-underline'>
+                        Home
+                    </Link>
+                </button>
+            </div>
+
+        </div>
+    )
+
     if (requestData.length === 0) return (
         <div className='h-screen'>
             <div className='flex flex-col justify-center items-center mt-24'>
@@ -53,7 +67,7 @@ const Request = () => {
     )
 
     return (
-        <div className=''>
+        <div className='mt-24'>
             <div className="flex justify-center items-center">
                 <h1 className="text-2xl  btn rounded-md">Request</h1>
             </div>

@@ -35,7 +35,7 @@ const truncateTitle = (title, maxLength = 50) => {
 
 
 const NewsData = ({ data }) => {
-    console.log(data)
+    // console.log(data)
     const author = data?.author
     const source = data?.source?.name
     const publishedAt = data?.publishedAt

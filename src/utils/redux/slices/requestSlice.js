@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const requestSliceSlice = createSlice({
     name: "request",
     initialState: {
-        request: null
+        request: []
     },
     reducers: {
         addRequest: (state, action) => {

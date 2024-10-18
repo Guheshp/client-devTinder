@@ -14,7 +14,6 @@ const Navbar = () => {
     const [learnToggle, setLearnToggle] = useState(false);
     const [active, setActive] = useState(false);
 
-
     const setUpOnHover = () => {
         setLearnToggle(true);
     };
@@ -40,7 +39,6 @@ const Navbar = () => {
             <div className="navbar bg-gradient-to-b from-neutral-950  p-4 fixed top-0 z-30 bg-opacity-90 ">
 
                 <div className="flex-1">
-
                     <Link
                         to={`/`}
                         className="btn btn-ghost text-xl sm:text-1xl md:text-2xl lg:text-3xl font-bold text-white"

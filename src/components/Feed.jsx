@@ -2,34 +2,44 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
-import { addFeed } from '../utils/redux/slices/feedSlice'
+import { addFeed, removeUserFromFeed } from '../utils/redux/slices/feedSlice'
 import UserCard from './UserCard'
 import Skeleton from './Skeleton'
 import SideProfile from './SideProfile'
 import RightFeed from './RightFeed'
+import { Navigate, useNavigate } from 'react-router-dom'
+import useNewsApi from './customhooks/useNewsApi'
+import useFetchStocks from './customhooks/useFetchStocks'
 
 const Feed = () => {
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const feed = useSelector((store) => store.feed.feed)
+    const { newsData } = useNewsApi()
+    const { stockApi } = useFetchStocks();
+
+
     const getFeed = async () => {
-        // if (feed) return;
+
         try {
-            const res = await axios.get(Base_URL + "/page/feed", { withCredentials: true })
+            const res = await axios.get(Base_URL + "/page/feed", {
+                withCredentials: true
+            })
             const data = res?.data?.data
             dispatch(addFeed(data))
+
         } catch (error) {
             console.log(error)
         }
     }
 
     useEffect(() => {
-
         setTimeout(() => {
             getFeed()
             setLoading(false)
-        }, 1000)
+        }, 4000)
     }, [])
+
 
     if (!feed) return (
         <div className='h-screen flex justify-center items-center mt-42'>
@@ -40,24 +50,26 @@ const Feed = () => {
     )
 
 
-    if (feed.length <= 0) return <h1 className='text-center mt-10 text-2xl'>No new Ueres Found</h1>
+    if (feed.length <= 0) return <Skeleton />
     return (
-        <div className='flex justify-center items-center mt-14'>
+        <div className='flex justify-center items-center mt-10'>
             {loading ?
-                <div className=' flex justify-center'>
-                    <Skeleton />
-                </div> :
+
+                <Skeleton />
+                :
                 <>
-                    <div className='w-9/12'>
+                    <div className='w-9/12 h-screen'>
 
                         {feed &&
-                            <div className='flex  my-14 gap-6 '>
-                                <div className='w-80'>
-                                    <SideProfile />
+                            <div className='flex my-14 gap-6 '>
+                                <div className='w-[30%]'>
+                                    <SideProfile stockApi={stockApi} />
                                 </div>
-                                <UserCard user={feed[0]} />
-                                <div className='w-80 h-[530px] overflow-y-auto'>
-                                    <RightFeed />
+                                <div className='w-[36%]'>
+                                    <UserCard user={feed[0]} />
+                                </div>
+                                <div className='w-[30%] h-[630px] overflow-y-auto'>
+                                    <RightFeed newsData={newsData} />
                                 </div>
                             </div>
                         }

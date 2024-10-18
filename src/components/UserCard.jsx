@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { removeUserFromFeed } from '../utils/redux/slices/feedSlice';
 import axios from 'axios';
 import Skeleton from './Skeleton';
+import Adds from './Adds';
 
 const UserCard = ({ user }) => {
 
@@ -35,7 +36,7 @@ const UserCard = ({ user }) => {
 
     return (
         <div>
-            <div className="card bg-base-300 w-[396px] shadow-xl">
+            <div className="card bg-base-300 w-full shadow-xl">
                 <figure>
                     <img
                         className='rounded-lg w-52 mt-5'
@@ -46,7 +47,7 @@ const UserCard = ({ user }) => {
                     <h2 className="card-title">{capitalizeFirstLetter(firstName) + " " + capitalizeFirstLetter(lastName)}</h2>
                     <p className='m-0'>Age: {age} Year</p>
                     <p className='m-0'>Skills: {skills}</p>
-                    <div className="card-actions justify-center my-10 gap-6">
+                    <div className="card-actions justify-center my-8 gap-6">
                         <button className="btn btn-secondary"
                             onClick={() => handleSendRequest("ignored", _id)}>Ignore
                         </button>
@@ -56,7 +57,9 @@ const UserCard = ({ user }) => {
                         </button>
                     </div>
                 </div>
+
             </div>
+
         </div>
     )
 }

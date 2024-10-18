@@ -6,6 +6,8 @@ import { addUser } from '../utils/redux/slices/userSlice'
 import { Base_URL } from '../utils/helper/constant'
 import toast from 'react-hot-toast'
 import { validateLogin } from '../utils/validate/validateLogin'
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 
 const Login = () => {
@@ -17,6 +19,12 @@ const Login = () => {
     const [isLoginfrom, setLoginForm] = useState(true)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleLoginSubmit = async () => {
 
@@ -112,12 +120,19 @@ const Login = () => {
                                 </div>
 
                                 <input
-                                    type="text"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     placeholder="Enter Password"
-                                    className="input input-bordered w-full max-w-xs"
+                                    className="input input-bordered w-full max-w-xs pr-10"
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <button
+                                    type="button"
+                                    className="absolute right-12 text-2xl  top-[248px] transform -translate-y-1/2 text-gray-500"
+                                    onClick={togglePasswordVisibility}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
                                 {isLoginfrom ?
                                     <div className="text-end">
                                         <Link to={``} className='label-text'>Forgot Password</Link>
