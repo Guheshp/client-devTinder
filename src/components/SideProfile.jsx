@@ -50,8 +50,9 @@ const SideProfile = ({ stockApi }) => {
                 <p className='text-sm'>{userData?.emailId}</p>
 
                 {/* <p>Here's the corrected JSON representation of 20 users with their email formatted as</p> */}
-                <p className='text-sm py-2'>{userData?.skills}</p>
-
+                <p className='text-sm py-2 w-full break-words overflow-hidden text-ellipsis font-medium'>
+                    {userData?.skills.join(" | ")}
+                </p>
 
             </div>
             <hr />

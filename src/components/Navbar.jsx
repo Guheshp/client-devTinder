@@ -95,10 +95,24 @@ const Navbar = () => {
                         }
                     </div>
 
-                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline'>
+                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline' onClick={() => toast((t) => (
+                        <span>
+                            Working on it,😁<b>Developer Component.</b>
+                            <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
+
+                            </button>
+                        </span>
+                    ))}>
                         Developers
                     </Link>
-                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline'>
+                    <Link className='px-2 text-xl text-white  hover:text-red-500 hover:underline' onClick={() => toast((t) => (
+                        <span>
+                            Working on it,😁<b>Support Component.</b>
+                            <button onClick={() => toast.dismiss(t.id)} className='text-red-600'>
+
+                            </button>
+                        </span>
+                    ))}>
                         Support
                     </Link>
                 </div>

@@ -13,8 +13,6 @@ import HomePage from './components/HomePage';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './utils/redux/appStore';
 
-
-
 function App() {
   return (
     <Provider store={store}>
@@ -32,6 +30,7 @@ function Main() {
   return (
     <BrowserRouter basename='/'>
       <Navbar />
+
       <Routes>
         <Route path='/' element={userData ? <Navigate to="/feed" /> : <HomePage />} />
         <Route path='/feed' element={<Feed />} />

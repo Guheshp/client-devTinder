@@ -12,6 +12,7 @@ const Request = () => {
     const capitalizeFirstLetter = (string) => {
         return string?.charAt(0).toUpperCase() + string?.slice(1);
     };
+    console.log("requestData", requestData)
 
     const fetchRequest = async () => {
         try {
@@ -73,22 +74,50 @@ const Request = () => {
             </div>
             <div className="flex flex-col items-center">
                 {requestData && requestData.map((request) => {
-                    const { firstName, lastName, age, gender, skills, photo } = request?.fromUserId
-                    return (
+                    // Check if fromUserId exists before destructuring
+                    const fromUser = request.fromUserId || {};
+                    const { firstName, lastName, age, gender, skills, photo } = fromUser;
 
-                        <div role="alert" key={request._id} className="alert shadow-mg m-3 border-black w-1/2">
-                            <img className='w-20 rounded ' src={photo} alt="" />
-                            <div className=''>
-                                <h3 className="font-bold text-xl">{capitalizeFirstLetter(firstName)} {capitalizeFirstLetter(lastName)} </h3>
-                                <div className="text-md mt-1 ">{age}, {gender}</div>
-                                <div className="text-md mt-1 ">Skill: {skills}</div>
+                    return (
+                        <div
+                            role="alert"
+                            key={request._id}
+                            className="alert shadow-md m-3 border border-black rounded-lg p-4 w-full max-w-3xl flex justify-between"
+                        >
+                            <div className="flex items-center mb-3">
+                                {photo ? (
+                                    <img className="w-20 rounded-full" src={photo} alt={`${firstName || 'No'} ${lastName || 'Name'}`} />
+                                ) : (
+                                    <div className="w-20 h-20 rounded-full bg-gray-300"></div> // Placeholder if no photo
+                                )}
+                                <div className="ml-4">
+                                    <h3 className="font-bold text-xl">
+                                        {firstName ? capitalizeFirstLetter(firstName) : 'No'} {lastName ? capitalizeFirstLetter(lastName) : 'Name'}
+                                    </h3>
+                                    <div className="text-md mt-1">{age || 'N/A'}, {gender || 'N/A'}</div>
+                                    <div className="text-md mt-1">Skill: {skills?.length ? skills.join(" | ") : 'No skills listed'}</div>
+                                </div>
                             </div>
-                            <button className="btn btn-primary" onClick={() => reviewRequest("accepeted", request._id)}>Accept</button>
-                            <button className="btn btn-secondary" onClick={() => reviewRequest("rejected", request._id)}>Reject</button>
+
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => reviewRequest("accepeted", request._id)}
+                                >
+                                    Accept
+                                </button>
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => reviewRequest("rejected", request._id)}
+                                >
+                                    Reject
+                                </button>
+                            </div>
                         </div>
-                    )
+                    );
                 })}
             </div>
+
         </div>
 
     )

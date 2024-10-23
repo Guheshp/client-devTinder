@@ -7,7 +7,7 @@ import UserCard from './UserCard'
 import Skeleton from './Skeleton'
 import SideProfile from './SideProfile'
 import RightFeed from './RightFeed'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import useNewsApi from './customhooks/useNewsApi'
 import useFetchStocks from './customhooks/useFetchStocks'
 
@@ -37,7 +37,7 @@ const Feed = () => {
         setTimeout(() => {
             getFeed()
             setLoading(false)
-        }, 4000)
+        }, 2000)
     }, [])
 
 
@@ -50,9 +50,22 @@ const Feed = () => {
     )
 
 
-    if (feed.length <= 0) return <Skeleton />
+    if (feed.length <= 0) return (
+        <div className='h-screen'>
+            <div className='flex flex-col justify-center items-center mt-24'>
+                <h1 className='text-center text-2xl font-bold'>No Users Found</h1>
+                <p className='text-center text-gray-600 mt-2'>Newly registerd will seen here!</p>
+                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
+                    <Link to={`/feed`} className='no-underline'>
+                        Home
+                    </Link>
+                </button>
+            </div>
+
+        </div>
+    )
     return (
-        <div className='flex justify-center items-center mt-10'>
+        <div className='flex justify-center items-center mt-14'>
             {loading ?
 
                 <Skeleton />

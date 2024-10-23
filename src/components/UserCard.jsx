@@ -46,7 +46,7 @@ const UserCard = ({ user }) => {
                 <div className="card-body">
                     <h2 className="card-title">{capitalizeFirstLetter(firstName) + " " + capitalizeFirstLetter(lastName)}</h2>
                     <p className='m-0'>Age: {age} Year</p>
-                    <p className='m-0'>Skills: {skills}</p>
+                    <p className='m-0 w-72'>Skills: {skills}</p>
                     <div className="card-actions justify-center my-8 gap-6">
                         <button className="btn btn-secondary"
                             onClick={() => handleSendRequest("ignored", _id)}>Ignore

@@ -55,7 +55,7 @@ const Connections = () => {
                     const { firstName, lastName, age, gender, skills, photo } = connection
                     return (
 
-                        <div role="alert" key={connection._id} className="alert shadow-mg m-4 border-black w-1/2">
+                        <div key={connection._id} className="flex justify-between shadow-mg m-4 border border-gray-400 p-4 rounded-xl w-1/2">
                             <img className='w-20 rounded ' src={photo} alt="" />
                             <div className=''>
                                 <h3 className="font-bold text-xl">{capitalizeFirstLetter(firstName)} {capitalizeFirstLetter(lastName)} </h3>

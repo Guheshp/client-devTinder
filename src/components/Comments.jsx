@@ -9,7 +9,7 @@ const Comments = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % totalComments);
-        }, 5000);
+        }, 4000);
 
         return () => clearInterval(interval);
     }, [totalComments]);
