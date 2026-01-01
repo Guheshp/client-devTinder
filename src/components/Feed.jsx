@@ -22,7 +22,7 @@ const Feed = () => {
     const getFeed = async () => {
 
         try {
-            const res = await axios.get(Base_URL + "/page/feed", {
+            const res = await axios.get(Base_URL + "/user/feed", {
                 withCredentials: true
             })
             const data = res?.data?.data
@@ -49,21 +49,6 @@ const Feed = () => {
         </div>
     )
 
-
-    if (feed.length <= 0) return (
-        <div className='h-screen'>
-            <div className='flex flex-col justify-center items-center mt-24'>
-                <h1 className='text-center text-2xl font-bold'>No Users Found</h1>
-                <p className='text-center text-gray-600 mt-2'>Newly registerd will seen here!</p>
-                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
-                    <Link to={`/feed`} className='no-underline'>
-                        Home
-                    </Link>
-                </button>
-            </div>
-
-        </div>
-    )
     return (
         <div className='flex justify-center items-center mt-14'>
             {loading ?
@@ -78,11 +63,24 @@ const Feed = () => {
                                 <div className='w-[30%]'>
                                     <SideProfile stockApi={stockApi} />
                                 </div>
-                                <div className='w-[36%]'>
-                                    <UserCard user={feed[0]} />
+                                <div className="w-[36%] flex justify-center items-start">
+                                    {feed.length > 0 ? (
+                                        <UserCard user={feed[0]} />
+                                    ) : (
+                                        <div className=" bg-base-300 p-6 rounded-xl shadow w-full">
+                                            <h2 className="text-xl font-semibold">No users found</h2>
+                                            <p className="text-gray-600 mt-2">
+                                                You have reached the end of the feed.
+                                            </p>
+                                            <p className="text-gray-500 text-sm mt-1">
+                                                Check back later for new profiles 👋
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
+
                                 <div className='w-[30%] h-[630px] overflow-y-auto'>
-                                    <RightFeed newsData={newsData} />
+                                    <RightFeed />
                                 </div>
                             </div>
                         }

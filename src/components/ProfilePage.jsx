@@ -1,171 +1,207 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import UserCard from './UserCard'
+import React, { useEffect } from 'react'
 import axios from 'axios'
-import { Base_URL } from '../utils/helper/constant'
-import { useDispatch } from 'react-redux'
-import { addUser } from '../utils/redux/slices/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import toast from 'react-hot-toast'
 
-const ProfilePage = ({ user }) => {
-    console.log("usershavs..", user)
+import UserCard from './UserCard'
+import { Base_URL, skillList, genderList, stateList } from '../utils/helper/constant'
+import { addUser } from '../utils/redux/slices/userSlice'
+import InputField from '../utils/form/InputField'
+import SelectField from '../utils/form/SelectField'
+import MultiSelectChipField from '../utils/form/MultiSelectChipField'
 
-    const [firstName, setFirstName] = useState(user.firstName)
-    const [lastName, setLastName] = useState(user.lastName)
-    const [age, setAge] = useState(user.age || "")
-    const [gender, setGender] = useState(user.gender || "")
-    const [skills, setskills] = useState(user.skills || "")
-    const [photo, setPhoto] = useState(user.photo || "")
-    const [_id, setId] = useState(user._id)
-    const [showTost, setShowTost] = useState(false)
-    const [error, setError] = useState("")
-    const [sucess, setsuccess] = useState("")
+/* ------------------ Yup Schema (FLAT) ------------------ */
+const profileSchema = yup.object({
+    /* ---------- REQUIRED ---------- */
+    firstName: yup
+        .string()
+        .min(2, 'First name must be at least 2 characters')
+        .required('First name is required'),
 
+    /* ---------- OPTIONAL ---------- */
+    lastName: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable(),
+
+    photo: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable()
+        .url('Photo must be a valid URL'),
+
+    age: yup
+        .number()
+        .transform((v, o) => (o === '' || o === null ? null : v))
+        .nullable()
+        .min(18, 'Age must be at least 18')
+        .max(60, 'Age must be below 60'),
+
+    gender: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable(),
+
+    experienceLevel: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable(),
+
+    bio: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable()
+        .max(3000, 'Bio is too long'),
+
+    skills: yup
+        .array()
+        .of(yup.string())
+        .nullable(),
+
+    state: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable(),
+
+    country: yup
+        .string()
+        .transform((v, o) => (o === '' ? null : v))
+        .nullable()
+})
+
+
+const ProfilePage = () => {
     const dispatch = useDispatch()
+    const userFromStore = useSelector(state => state.user.user)
 
-    const saveProfile = async () => {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        control,
+        reset,
+        formState: { errors }
+    } = useForm({
+        resolver: yupResolver(profileSchema)
+    })
+
+    /* 🔥 Sync Redux → Form */
+    useEffect(() => {
+        if (userFromStore) {
+            reset({
+                firstName: userFromStore.firstName || '',
+                lastName: userFromStore.lastName || '',
+                age: userFromStore.age || null,
+                gender: userFromStore.gender || '',
+                photo: userFromStore.photo || '',
+                bio: userFromStore.bio || '',
+                experienceLevel: userFromStore.experienceLevel || 'fresher',
+                skills: userFromStore.skills || [],
+                state: userFromStore.location?.state || '',
+                country: 'India',
+                emailId: userFromStore.emailId || '' // ✅ ADD THIS
+
+
+            })
+        }
+    }, [userFromStore, reset])
+
+    /* Toast validation errors */
+    useEffect(() => {
+        Object.values(errors).forEach(err => toast.error(err.message))
+    }, [errors])
+
+    /* ------------------ Submit ------------------ */
+    const onSubmit = async (data) => {
+        const payload = {
+            firstName: data.firstName,
+            lastName: data.lastName || undefined,
+            age: data.age ?? undefined,
+            gender: data.gender,
+            bio: data.bio,
+            experienceLevel: data.experienceLevel,
+            skills: data.skills,
+            location: {
+                state: data.state,
+                country: data.country
+            },
+            photo: data.photo || null // ✅ IMPORTANT FIX
+        }
+
+
+        // ✅ IMPORTANT: only send photo if user entered it
+        if (data.photo) {
+            payload.photo = data.photo
+        }
 
         try {
-            const res = await axios.post(Base_URL + "/profile/edit",
-                { firstName, lastName, age, gender, skills, photo }, { withCredentials: true });
-            dispatch(addUser(res?.data?.data))
-            setsuccess("Profile saved successfully")
-            setError("")
-            setShowTost(true)
-            setTimeout(() => {
-                setShowTost(false)
-            }, 3000)
+            const res = await axios.post(
+                `${Base_URL}/profile/edit`,
+                payload,
+                { withCredentials: true }
+            )
 
-        } catch (error) {
-            console.error(error)
-            let message = "ERROR: While updateing profile!"
-            if (error?.response?.data?.error) {
-                message = error.response.data.error;
-            }
-            setError(message)
-            setsuccess("")
-            setShowTost(true)
-            setTimeout(() => {
-                setShowTost(false)
-            }, 3000)
-
+            dispatch(addUser(res.data.data))
+            toast.success('Profile updated successfully')
+        } catch (err) {
+            toast.error(err?.response?.data?.error || 'Update failed')
         }
     }
 
+
     return (
-        <div className='flex justify-center my-8'>
-            <div className='flex justify-center mx-8'>
-                <div className="card bg-base-300 w-96 shadow-xl">
+        <div className="flex justify-center my-8 gap-10">
+            <div className="card bg-base-300 w-full max-w-3xl shadow-xl">
+                <h1 className="text-xl font-medium text-center mt-4">
+                    Edit Profile
+                </h1>
 
-                    <h1 className='text-xl font-medium text-center mt-4'>Edit Profile</h1>
-                    {showTost &&
-                        <div className="toast toast-top toast-center">
-                            {error &&
-                                <div className="alert alert-info">
-                                    <span>{error}</span>
-                                </div>
-                            }
-                            {sucess &&
-                                <div className="alert alert-success">
-                                    <span>Profile saved Successfully</span>
-                                </div>
-                            }
-
-                        </div>
-                    }
-                    <div className="card-body py-1">
-                        <label className="form-control w-full max-w-xs">
-                            <div className="label">
-                                <span className="label-text">First Name <span className='text-red-800'>*</span></span>
-                            </div>
-                            <input
-                                type="text"
-                                value={firstName}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setFirstName(e.target.value)}
-                            />
-                        </label>
-
-                        <label className="form-control w-full max-w-xs my-0">
-                            <div className="label">
-                                <span className="label-text">Last Name <span className='text-red-800'>*</span></span>
-                            </div>
-
-                            <input
-                                type="text"
-                                value={lastName}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setLastName(e.target.value)}
-                            />
+                <form onSubmit={handleSubmit(onSubmit)} className="card-body">
+                    <InputField
+                        label="Email"
+                        name="emailId"
+                        register={register}
+                        disabled
+                        required
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 
-                        </label>
-                        <label className="form-control w-full max-w-xs my-0">
-                            <div className="label">
-                                <span className="label-text">Photo URL: <span className='text-red-800'>*</span></span>
-                            </div>
+                        <InputField label="First Name" name="firstName" register={register} required />
+                        <InputField label="Last Name" name="lastName" register={register} />
+                        <InputField label="Photo URL" name="photo" register={register} />
+                        <InputField label="Age" name="age" register={register} />
 
-                            <input
-                                type="text"
-                                value={photo}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setPhoto(e.target.value)}
-                            />
-                        </label>
-                        <label className="form-control w-full max-w-xs my-0">
-                            <div className="label">
-                                <span className="label-text">Age: <span className='text-red-800'>*</span></span>
-                            </div>
+                        <SelectField label="Gender" name="gender" register={register} options={genderList} />
+                        <SelectField
+                            label="Experience Level"
+                            name="experienceLevel"
+                            register={register}
+                            options={[
+                                { id: 'fresher', name: 'Fresher' },
+                                { id: 'junior', name: 'Junior' },
+                                { id: 'mid', name: 'Mid-Level' },
+                                { id: 'senior', name: 'Senior' }
+                            ]}
+                        />
 
-                            <input
-                                type="text"
-                                value={age}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setAge(e.target.value)}
-                            />
+                        <InputField label="Bio" name="bio" register={register} />
+                        <MultiSelectChipField label="Skills" name="skills" control={control} options={skillList} />
 
-
-                        </label>
-                        <label className="form-control w-full max-w-xs my-0">
-                            <div className="label">
-                                <span className="label-text">Gender: <span className='text-red-800'>*</span></span>
-                            </div>
-
-                            <input
-                                type="text"
-                                value={gender}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setGender(e.target.value)}
-                            />
-
-
-                        </label>
-                        <label className="form-control w-full max-w-xs my-0">
-                            <div className="label">
-                                <span className="label-text">Skills: <span className='text-red-800'>*</span></span>
-                            </div>
-
-                            <input
-                                type="text"
-                                value={skills}
-                                className="input input-bordered w-full max-w-xs"
-                                onChange={(e) => setskills(e.target.value)}
-                            />
-
-
-                        </label>
-                        <div className='text-center my-1 '>
-                            <button className='btn btn-primary' onClick={saveProfile}>
-                                Save Profile
-                            </button>
-                        </div>
-
+                        <SelectField label="State" name="state" register={register} options={stateList} />
+                        <InputField label="Country" name="country" register={register} disabled />
                     </div>
 
-                </div>
+                    <button className="btn btn-primary w-full mt-4">
+                        Save Profile
+                    </button>
+                </form>
             </div>
-            <UserCard user={{ _id, firstName, lastName, age, gender, skills, photo }} />
 
+            <UserCard user={{ ...watch(), _id: userFromStore?._id }} />
         </div>
     )
 }

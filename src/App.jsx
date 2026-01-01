@@ -12,6 +12,8 @@ import Navbar from './components/Navbar'; // Assuming you want to use this
 import HomePage from './components/HomePage';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './utils/redux/appStore';
+import Chat from './components/Chat';
+import ChatPage from './components/chat/ChatPage';
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function Main() {
         <Route path='/profile' element={<Profile />} />
         <Route path='/connections' element={<Connections />} />
         <Route path='/requests' element={<Request />} />
+        <Route path='/chat' element={<ChatPage />} />
+        <Route path='/chat/:targetUserId' element={<Chat />} />
       </Routes>
 
     </BrowserRouter>

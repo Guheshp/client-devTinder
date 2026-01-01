@@ -1,97 +1,131 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { MdConnectWithoutContact } from "react-icons/md";
-import axios from 'axios';
-import { Base_URL } from '../utils/helper/constant';
-import Adds from './Adds';
+import { MdConnectWithoutContact } from 'react-icons/md'
+import axios from 'axios'
+import { Base_URL, DEFAULT_IMG, skillList } from '../utils/helper/constant'
+import Adds from './Adds'
 
 const SideProfile = ({ stockApi }) => {
-    const userData = useSelector((store) => store.user.user)
+    const userData = useSelector(store => store.user.user)
     const [requestData, setRequestData] = useState([])
-    const [connectionData, setConectionData] = useState([])
-    const fetchConnection = async () => {
-        try {
-            const res = await axios.get(Base_URL + "/user/connections", { withCredentials: true })
-            const data = res?.data?.message
-            // console.log("res", data)
-            setConectionData(data)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-    const fetchRequest = async () => {
-        try {
-            const res = await axios.get(Base_URL + "/user/request/received", { withCredentials: true })
-            const data = res?.data?.message
-            // console.log("request", data)
-            setRequestData(data)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const [connectionData, setConnectionData] = useState([])
+    console.log('connectionData', connectionData)
+    /* ---------------- Fetch data ---------------- */
     useEffect(() => {
-        fetchConnection()
-        fetchRequest()
+        const fetchConnections = async () => {
+            const res = await axios.get(
+                `${Base_URL}/user/connections`,
+                { withCredentials: true }
+            )
+            setConnectionData(res.data.data || [])
+        }
+
+        const fetchRequests = async () => {
+            const res = await axios.get(
+                `${Base_URL}/user/request/received`,
+                { withCredentials: true }
+            )
+            setRequestData(res.data.data || [])
+        }
+
+        fetchConnections()
+        fetchRequests()
     }, [])
 
-    console.log("userData.!..", userData)
+
+
+    const getSkillNames = (skills = []) => {
+        if (!Array.isArray(skills)) return []
+
+        return skills
+            .map(id => skillList.find(s => s.id === id)?.name)
+            .filter(Boolean)
+    }
+
+
+    if (!userData) return null
+
     return (
-        <div className=''>
-            <div className='bg-base-300 h-full p-4 rounded-t-xl'>
-                <div className="avatar online align-middle">
+        <div className="w-full">
+
+            {/* -------- Profile Header -------- */}
+            <div className="bg-base-300 p-4 rounded-t-xl">
+                <div className="avatar online mb-2">
                     <div className="w-24 rounded-full">
-                        <img src={userData?.photo} />
+                        <img
+                            src={userData.photo || DEFAULT_IMG}
+                            alt="Profile"
+                        />
                     </div>
                 </div>
-                <Link to={`/profile`} className='hover:text-primary hover:underline'>
-                    <p className='font-bold '>{userData?.firstName} {userData?.lastName}</p>
-                </Link>
-                <p className='text-sm'>{userData?.emailId}</p>
 
-                {/* <p>Here's the corrected JSON representation of 20 users with their email formatted as</p> */}
-                <p className='text-sm py-2 w-full break-words overflow-hidden text-ellipsis font-medium'>
-                    {userData?.skills.join(" | ")}
+                <Link
+                    to="/profile"
+                    className="font-semibold hover:text-primary hover:underline block"
+                >
+                    {userData.firstName} {userData.lastName}
+                </Link>
+
+                <p className="text-xs text-gray-500 break-all">
+                    {userData.emailId}
+                </p>
+
+                {/* Skills */}
+                <p className="text-xs mt-2 font-medium text-gray-600 break-words">
+                    {getSkillNames(userData.skills).length > 0
+                        ? getSkillNames(userData.skills).join(' | ')
+                        : 'No skills added'}
                 </p>
 
             </div>
+
             <hr />
-            <div>
-                <ul className="menu bg-base-200 w-full p-2">
-                    <li>
-                        <a>
-                            <MdConnectWithoutContact />
-                            <Link to={`/connections`} className='hover:text-primary hover:underline'>
-                                <p className='text-sm'> {connectionData?.length} Connection.</p>
-                            </Link>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <Link to={`/requests`} className='hover:text-primary hover:underline'>
-                                <p className='text-sm'> {requestData?.length} Request.</p>
-                            </Link>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+
+            {/* -------- Menu -------- */}
+            <ul className="menu bg-base-200 w-full p-2 text-sm">
+
+                <li>
+                    <Link to="/connections" className="flex items-center gap-2">
+                        <MdConnectWithoutContact className="text-lg" />
+                        <span>{connectionData.length} Connections</span>
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/requests" className="flex items-center gap-2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        <span>{requestData.length} Requests</span>
+                    </Link>
+                </li>
+
+            </ul>
+
             <hr />
-            <div className='menu bg-base-200 w-full p-3 text-center border-b-2'>
-                <p><span className='text-bold text-indigo-500'>* Working on:</span> Users will soon be able to message connected people!</p>
+
+            {/* -------- Info -------- */}
+            <div className="bg-base-200 p-3 text-center text-xs border-b">
+                <span className="font-semibold text-indigo-500">
+                    * Working on:
+                </span>{' '}
+                Messaging between connected users coming soon!
             </div>
-            <div className='mt-4'>
+
+            {/* -------- Ads -------- */}
+            <div className="mt-4">
                 <Adds stockApi={stockApi} />
             </div>
         </div>
