@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { MdConnectWithoutContact } from 'react-icons/md'
+// Added MdChat to the imports
+import { MdConnectWithoutContact, MdChat } from 'react-icons/md'
 import axios from 'axios'
 import { Base_URL, DEFAULT_IMG, skillList } from '../utils/helper/constant'
 import Adds from './Adds'
+import { createSocketConnection } from '../utils/helper/socket'
 
 const SideProfile = ({ stockApi }) => {
     const userData = useSelector(store => store.user.user)
     const [requestData, setRequestData] = useState([])
     const [connectionData, setConnectionData] = useState([])
-    console.log('connectionData', connectionData)
+    const [unreadCount, setUnreadCount] = useState(0)
+
+
+
+    const fetchUnreadCount = async () => {
+        const res = await axios.get(
+            `${Base_URL}/chat/unread-count`,
+            { withCredentials: true }
+        )
+        setUnreadCount(res?.data?.data || 0)
+    }
     /* ---------------- Fetch data ---------------- */
     useEffect(() => {
         const fetchConnections = async () => {
@@ -31,8 +43,12 @@ const SideProfile = ({ stockApi }) => {
 
         fetchConnections()
         fetchRequests()
+
     }, [])
 
+    useEffect(() => {
+        fetchUnreadCount()
+    }, [])
 
 
     const getSkillNames = (skills = []) => {
@@ -42,6 +58,29 @@ const SideProfile = ({ stockApi }) => {
             .map(id => skillList.find(s => s.id === id)?.name)
             .filter(Boolean)
     }
+    /* ---------------- Socket Listener ---------------- */
+    useEffect(() => {
+        if (!userData?._id) return
+
+        const socket = createSocketConnection()
+
+        // 1. Tell the server we are online (Critical for receiving events!)
+        socket.emit('userOnline', userData._id)
+
+        // 2. Define handler
+        const handleUnreadUpdate = () => {
+            fetchUnreadCount()
+        }
+
+        // 3. Listen for the event
+        socket.on('unreadCountUpdated', handleUnreadUpdate)
+
+        return () => {
+            // ⚠️ FIX: Do NOT disconnect. Just remove the listener.
+            socket.off('unreadCountUpdated', handleUnreadUpdate)
+        }
+    }, [userData?._id])
+
 
 
     if (!userData) return null
@@ -85,6 +124,24 @@ const SideProfile = ({ stockApi }) => {
             {/* -------- Menu -------- */}
             <ul className="menu bg-base-200 w-full p-2 text-sm">
 
+                {/* Chat / Messages Link - Added Here */}
+                <li>
+                    <Link to="/chat" className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <MdChat className="text-lg text-primary" />
+                            <span>Messages</span>
+                        </div>
+
+                        {unreadCount > 0 && (
+                            <span className="badge badge-primary badge-sm">
+                                {unreadCount}
+                            </span>
+                        )}
+
+
+                    </Link>
+                </li>
+
                 <li>
                     <Link to="/connections" className="flex items-center gap-2">
                         <MdConnectWithoutContact className="text-lg" />
@@ -116,15 +173,8 @@ const SideProfile = ({ stockApi }) => {
 
             <hr />
 
-            {/* -------- Info -------- */}
-            <div className="bg-base-200 p-3 text-center text-xs border-b">
-                <span className="font-semibold text-indigo-500">
-                    * Working on:
-                </span>{' '}
-                Messaging between connected users coming soon!
-            </div>
-
             {/* -------- Ads -------- */}
+            {/* Removed the "Working on messaging" text since the feature is now live */}
             <div className="mt-4">
                 <Adds stockApi={stockApi} />
             </div>

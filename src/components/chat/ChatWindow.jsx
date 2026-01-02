@@ -66,6 +66,8 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
     }, [user?._id])
 
     /* ---------------- JOIN CHAT + MESSAGE EVENTS ---------------- */
+    /* Inside ChatWindow.jsx - Update the socket useEffect */
+
     useEffect(() => {
         if (!socketRef.current || !targetUserId || !user?._id) return
 
@@ -74,32 +76,41 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
             targetUserId
         })
 
-        socketRef.current.on('receiveMessage', msg => {
+        const handleReceiveMessage = (msg) => {
             setMessages(prev => [
                 ...prev,
                 {
                     _id: msg._id,
                     text: msg.text,
                     createdAt: msg.createdAt,
-                    seen: false,
+                    seen: false, // realtime msgs are unseen initially
                     sender: msg.senderId === user._id ? 'me' : 'other'
                 }
             ])
-
             onNewMessage(msg.senderId, msg.text)
-        })
 
-        socketRef.current.on('messagesSeen', () => {
+            // 🔥 If I am viewing this chat, mark it seen immediately via socket
+            if (msg.senderId !== user._id) {
+                socketRef.current.emit('markSeen', {
+                    userId: user._id,
+                    targetUserId
+                })
+            }
+        }
+
+        const handleMessagesSeen = () => {
             setMessages(prev =>
-                prev.map(m =>
-                    m.sender === 'me' ? { ...m, seen: true } : m
-                )
+                prev.map(m => (m.sender === 'me' ? { ...m, seen: true } : m))
             )
-        })
+        }
+
+        socketRef.current.on('receiveMessage', handleReceiveMessage)
+        socketRef.current.on('messagesSeen', handleMessagesSeen)
 
         return () => {
-            socketRef.current.off('receiveMessage')
-            socketRef.current.off('messagesSeen')
+            // ⚠️ ONLY REMOVE LISTENERS, DO NOT DISCONNECT
+            socketRef.current.off('receiveMessage', handleReceiveMessage)
+            socketRef.current.off('messagesSeen', handleMessagesSeen)
         }
     }, [targetUserId, user?._id])
 
@@ -148,8 +159,8 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
                     <p className="text-xs flex items-center gap-1">
                         <span
                             className={`w-2 h-2 rounded-full ${onlineUsers.has(targetUserId)
-                                    ? 'bg-green-500'
-                                    : 'bg-gray-400'
+                                ? 'bg-green-500'
+                                : 'bg-gray-400'
                                 }`}
                         />
                         <span className="text-gray-500">
@@ -165,14 +176,14 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
                     <div
                         key={idx}
                         className={`flex ${msg.sender === 'me'
-                                ? 'justify-end'
-                                : 'justify-start'
+                            ? 'justify-end'
+                            : 'justify-start'
                             }`}
                     >
                         <div
                             className={`px-3 py-2 rounded-lg max-w-[75%] text-sm ${msg.sender === 'me'
-                                    ? 'bg-primary text-white'
-                                    : 'bg-base-100'
+                                ? 'bg-primary text-white'
+                                : 'bg-base-100'
                                 }`}
                         >
                             <p>{msg.text}</p>
