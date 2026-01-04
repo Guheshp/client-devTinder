@@ -1,4 +1,4 @@
-import Premium from "./premium/premium"
+import Premium from "./premium/Premium"
 import ProfileStrength from "./ProfileStrength"
 import SuggestedSkills from "./SuggestedSkills"
 
