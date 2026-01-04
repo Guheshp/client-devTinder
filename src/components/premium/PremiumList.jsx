@@ -1,11 +1,26 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCheck, FaRobot, FaStar } from 'react-icons/fa'; // Importing icons
 import { Base_URL } from '../../utils/helper/constant';
 
 const PremiumList = () => {
+    const [isPremium, setIsPremium] = useState(false);
 
+    const verifyPremiumUser = async () => {
+        try {
+            const res = await axios.post(Base_URL + '/payment/verify', {
+            }, {
+                withCredentials: true
+            });
+            setIsPremium(res.data.isPremium);
+        } catch (error) {
+            console.error('Payment verification failed:', error);
+        }
+    }
 
+    useEffect(() => {
+        verifyPremiumUser()
+    }, []);
 
     const handlePayment = async (plan) => {
         try {
@@ -34,6 +49,7 @@ const PremiumList = () => {
                 theme: {
                     color: '#F37254'
                 },
+                handler: verifyPremiumUser
             };
 
 
@@ -47,8 +63,10 @@ const PremiumList = () => {
     }
 
 
-    return (
-        <div className="bg-white mt-12 rounded-xl  ">
+    return isPremium ? (
+
+
+        <div className="bg-white mt-12 rounded-xl  " >
             <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Choose Your Plan</h2>
 
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -130,6 +148,13 @@ const PremiumList = () => {
                 </div>
 
             </div>
+        </div >
+
+
+
+    ) : (
+        <div className="text-center mt-20">
+            <h2 className="text-2xl font-bold text-gray-900">You are already a Premium User!</h2>
         </div>
     );
 }

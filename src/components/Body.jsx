@@ -5,7 +5,7 @@ import Footer from './Footer'
 import axios from 'axios'
 import { Base_URL } from '../utils/helper/constant'
 import { useDispatch, useSelector } from 'react-redux'
-import { addUser } from '../utils/redux/slices/userSlice'
+import { } from '../utils/redux/slices/userSlice'
 import toast from 'react-hot-toast'
 import HomePage from './HomePage'
 
