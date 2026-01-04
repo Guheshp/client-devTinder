@@ -37,6 +37,7 @@ const Login = () => {
             );
         }
         try {
+            console.log("login called   base url", Base_URL)
             const res = await axios.post(Base_URL + `/login`,
                 { emailId, password },
                 { withCredentials: true })
