@@ -2,9 +2,11 @@
 console.log('location.hostname', location.hostname)
 // src/utils/constants.js
 
-export const Base_URL = location.hostname === "localhost"
-    ? "http://localhost:7777"  // If I am on my laptop, talk to localhost backend
-    : "https://devtinder-backend-guhesh.onrender.com"; // If I am on Vercel, talk to Render backend
+export const Base_URL =
+    location.hostname === "localhost"
+        ? "http://localhost:7777"
+        : "https://dev-tinder-backend-udyy.onrender.com";
+
 
 export const BUTTON_IMAGE = "https://media.istockphoto.com/id/1198257563/vector/lets-connect.jpg?s=612x612&w=0&k=20&c=uivSAp20-gXK03lK_kZDD6GhwxzCiArpt8mQXgMSjz4="
 
