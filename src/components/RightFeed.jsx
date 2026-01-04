@@ -1,3 +1,4 @@
+import Premium from "./premium/premium"
 import ProfileStrength from "./ProfileStrength"
 import SuggestedSkills from "./SuggestedSkills"
 
@@ -7,6 +8,7 @@ const RightSidebar = () => {
         <div className="space-y-4">
             <ProfileStrength />
             <SuggestedSkills />
+            <Premium />
         </div>
     )
 }

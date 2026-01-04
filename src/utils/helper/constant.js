@@ -1,4 +1,4 @@
-export const Base_URL = "http://localhost:3971"
+export const Base_URL = "http://localhost:7777"
 
 
 export const BUTTON_IMAGE = "https://media.istockphoto.com/id/1198257563/vector/lets-connect.jpg?s=612x612&w=0&k=20&c=uivSAp20-gXK03lK_kZDD6GhwxzCiArpt8mQXgMSjz4="
@@ -33,6 +33,33 @@ export const stateList = [
     { id: 'delhi', name: 'Delhi' }
 ]
 
+
+export const premiumFeatures = [
+    {
+        title: "Verified Blue Tick",
+        description:
+            "Get a blue tick on your profile to build trust and increase visibility.",
+        icon: "🔵",
+    },
+    {
+        title: "Chat Without Connection",
+        description:
+            "Start conversations even without being connected as friends.",
+        icon: "💬",
+    },
+    {
+        title: "Send Up to 500 Requests",
+        description:
+            "Expand your network faster with up to 500 connection requests per month.",
+        icon: "🔁",
+    },
+    {
+        title: "Advanced AI Features",
+        description:
+            "Unlock AI-powered profile optimization, smart matches, and message suggestions.",
+        icon: "🤖",
+    },
+]
 
 
 

@@ -15,6 +15,7 @@ import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import Chat from './components/Chat';
 import ChatPage from './components/chat/ChatPage';
+import PremiumList from './components/premium/PremiumList';
 
 // --- 1. Create the Protected Route Wrapper ---
 // Allows access only if user is logged in, otherwise sends to Login
@@ -67,6 +68,7 @@ function Main() {
           {/* Chat Routes */}
           <Route path='/chat' element={<ChatPage />} />
           <Route path='/chat/:targetUserId' element={<Chat />} />
+          <Route path='/premiumList' element={<PremiumList />} />
         </Route>
 
         {/* Fallback for unknown routes */}
