@@ -1,5 +1,8 @@
-export const Base_URL = "http://localhost:7777"
+// src/utils/constants.js
 
+export const BASE_URL = location.hostname === "localhost"
+    ? "http://localhost:7777"
+    : "https://devtinder-backend-guhesh.onrender.com";
 
 export const BUTTON_IMAGE = "https://media.istockphoto.com/id/1198257563/vector/lets-connect.jpg?s=612x612&w=0&k=20&c=uivSAp20-gXK03lK_kZDD6GhwxzCiArpt8mQXgMSjz4="
 
