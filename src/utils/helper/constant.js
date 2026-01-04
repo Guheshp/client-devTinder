@@ -1,5 +1,5 @@
 // src/utils/constants.js
-
+console.log('location.hostname', location.hostname)
 export const Base_URL = location.hostname === "localhost"
     ? "http://localhost:7777"
     : "https://devtinder-backend-guhesh.onrender.com";
