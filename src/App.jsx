@@ -15,7 +15,7 @@ import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import Chat from './components/Chat';
 import ChatPage from './components/chat/ChatPage';
-import PremiumList from './components/premium/PremiumList';
+import PremiumList from './components/Premium/PremiumList';
 
 // --- 1. Create the Protected Route Wrapper ---
 // Allows access only if user is logged in, otherwise sends to Login
