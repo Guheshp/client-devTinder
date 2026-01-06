@@ -7,15 +7,12 @@ import UserCard from './UserCard'
 const Profile = () => {
 
     const userData = useSelector((store) => store.user.user)
-    console.log("userData!..", userData)
     return (
         <>
-            <div className='h-screen mt-24'>
-                {userData &&
-                    <div className=''>
-                        <ProfilePage user={userData} />
-                    </div>
-                }
+            <div className='min-h-screen pt-24 bg-base-200'>
+                {userData && (
+                    <ProfilePage user={userData} />
+                )}
             </div>
         </>
 

@@ -16,6 +16,7 @@ import HomePage from './components/HomePage';
 import Chat from './components/Chat';
 import ChatPage from './components/chat/ChatPage';
 import PremiumList from './components/premium/PremiumList';
+import { UserProvider } from './utils/helper/UserContext.jsx';
 
 // --- 1. Create the Protected Route Wrapper ---
 // Allows access only if user is logged in, otherwise sends to Login
@@ -36,8 +37,10 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Toaster position="bottom-left" reverseOrder={false} />
-        <Main />
+        <UserProvider>
+          <Toaster position="bottom-left" reverseOrder={false} />
+          <Main />
+        </UserProvider>
       </PersistGate>
     </Provider>
   );

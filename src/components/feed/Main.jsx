@@ -3,16 +3,14 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-
-import { Base_URL, skillList } from '../utils/helper/constant'
-import { removeUserFromFeed } from '../utils/redux/slices/feedSlice'
-import { calculateSkillMatch } from '../utils/helper/skillMatch'
-import UserCardPreview from './usercard/UserCardPreview'
-import UserCardModal from './usercard/UserCardModal'
+import FeedCardPreview from './FeedCardPreview'
+import FeedCardModal from './FeedCardModal'
+import { calculateSkillMatch } from '../../utils/helper/skillMatch'
+import { removeUserFromFeed } from '../../utils/redux/slices/feedSlice'
+import { Base_URL, skillList } from '../../utils/helper/constant'
 
 // Import the sub-components
-
-const UserCard = ({ user }) => {
+const Main = ({ user }) => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const loggedInUser = useSelector(state => state.user.user)
@@ -86,7 +84,7 @@ const UserCard = ({ user }) => {
 
     return (
         <>
-            <UserCardPreview
+            <FeedCardPreview
                 user={user}
                 percentage={percentage}
                 previewSkills={previewSkills}
@@ -98,7 +96,7 @@ const UserCard = ({ user }) => {
                 onChat={handleChatClick}
             />
 
-            <UserCardModal
+            <FeedCardModal
                 user={user}
                 modalId={modalId}
                 percentage={percentage}
@@ -112,4 +110,4 @@ const UserCard = ({ user }) => {
     )
 }
 
-export default UserCard
+export default Main

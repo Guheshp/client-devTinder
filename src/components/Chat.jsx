@@ -20,7 +20,6 @@ const Chat = () => {
                 withCredentials: true
             })
 
-            console.log('Chat data:', data.data.chat.messages);
 
             const formattedMessages = data?.data?.chat?.messages?.map(msg => ({
                 text: msg.text,

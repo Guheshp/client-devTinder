@@ -1,125 +1,148 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
-import { Base_URL } from '../utils/helper/constant'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addRequest, removeRequest } from '../utils/redux/slices/requestSlice'
 import { Link } from 'react-router-dom'
+import { BsPersonX } from 'react-icons/bs'
+
+import { addRequest, removeRequest } from '../utils/redux/slices/requestSlice'
+import { Base_URL } from '../utils/helper/constant'
+import RequestSkeleton from './skeleton/RequestSkeleton'
+
+import RequestCard from './request/RequestCard'
+import UserDetailModal from './request/UserDetailModal'
 
 const Request = () => {
     const dispatch = useDispatch()
     const requestData = useSelector((store) => store.request.request)
-    console.log("requestData...", requestData)
-    const capitalizeFirstLetter = (string) => {
-        return string?.charAt(0).toUpperCase() + string?.slice(1);
-    };
-    console.log("requestData", requestData)
+
+    const [modalUser, setModalUser] = useState(null)
+    const [currentRequestId, setCurrentRequestId] = useState(null)
+
+    const [isLoading, setIsLoading] = useState(true)
+    const [isModalLoading, setIsModalLoading] = useState(false)
 
     const fetchRequest = async () => {
         try {
+            setIsLoading(true)
             const res = await axios.get(Base_URL + "/user/request/received", { withCredentials: true })
-            const data = res?.data?.message
-            // console.log("request", data)
+            const data = res?.data?.data
             dispatch(addRequest(data))
         } catch (error) {
-            console.log(error)
+            console.error("Error fetching requests:", error)
+        } finally {
+            setTimeout(() => setIsLoading(false), 300)
         }
     }
 
-    const reviewRequest = async (status, _id) => {
+    const reviewRequest = async (status, requestId) => {
         try {
-            const res = await axios.post(Base_URL + "/request/review/" + status + "/" + _id, {}, { withCredentials: true })
-            dispatch(removeRequest(_id))
+            await axios.post(`${Base_URL}/request/review/${status}/${requestId}`, {}, { withCredentials: true })
+            dispatch(removeRequest(requestId))
+            // If we accepted/rejected from within the modal, close it
+            closeLocalModal()
         } catch (error) {
-            console.error(error)
+            console.error(`Error reviewing request (${status}):`, error)
         }
+    }
+
+    // 1. Handle Click: Just fetch data and update state
+    const handleCardClick = async (userId, requestId) => {
+        setIsModalLoading(true);
+        setCurrentRequestId(requestId);
+
+        try {
+            const res = await axios.get(`${Base_URL}/user/${userId}`, { withCredentials: true });
+            setModalUser(res?.data?.data);
+            // Note: We don't open the modal here anymore. 
+            // The useEffect below handles it once the DOM is ready.
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+        } finally {
+            setIsModalLoading(false);
+        }
+    }
+
+    // 2. Effect: Open Modal automatically when modalUser data is populated
+    useEffect(() => {
+        if (modalUser) {
+            const modal = document.getElementById('user-detail-modal');
+            if (modal) {
+                modal.showModal();
+            }
+        }
+    }, [modalUser]); // Runs whenever modalUser changes
+
+    const closeLocalModal = () => {
+        // We can just clear the user, which removes the modal from DOM (if your Modal returns null on no user)
+        // Or strictly close the dialog first if needed.
+        const modal = document.getElementById('user-detail-modal');
+        if (modal) modal.close();
+        setModalUser(null);
+        setCurrentRequestId(null);
     }
 
     useEffect(() => {
         fetchRequest()
     }, [])
-    if (!requestData) return (
-        <div className='h-screen'>
-            <div className='flex flex-col justify-center items-center mt-24'>
-                <h1 className='text-center text-2xl font-bold'>No Requests Found</h1>
-                <p className='text-center text-gray-600 mt-2'>If someone is interested in your profile, they will send you a request.</p>
-                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
-                    <Link to={`/feed`} className='no-underline'>
-                        Home
+
+    if (isLoading) return <RequestSkeleton />
+
+    if (!requestData || requestData.length === 0) {
+        return (
+            <div className='min-h-screen flex items-center justify-center bg-base-200 pt-16'>
+                <div className='text-center p-8'>
+                    <div className="bg-gray-100 p-6 rounded-full inline-block mb-4">
+                        <BsPersonX className="text-6xl text-gray-400" />
+                    </div>
+                    <h1 className='text-2xl font-bold text-gray-700'>No Pending Requests</h1>
+                    <p className='text-gray-500 mt-2 max-w-md mx-auto'>
+                        It looks quiet here. Keep exploring the feed to connect with more developers!
+                    </p>
+                    <Link to="/feed" className='btn btn-primary mt-6 text-white px-8'>
+                        Explore Feed
                     </Link>
-                </button>
+                </div>
             </div>
-
-        </div>
-    )
-
-    if (requestData.length === 0) return (
-        <div className='h-screen'>
-            <div className='flex flex-col justify-center items-center mt-24'>
-                <h1 className='text-center text-2xl font-bold'>No Requests Found</h1>
-                <p className='text-center text-gray-600 mt-2'>If someone is interested in your profile, they will send you a request.</p>
-                <button className='btn mt-10  text-white py-2 px-4 rounded  transition'>
-                    <Link to={`/feed`} className='no-underline'>
-                        Home
-                    </Link>
-                </button>
-            </div>
-
-        </div>
-    )
+        )
+    }
 
     return (
-        <div className='mt-24'>
-            <div className="flex justify-center items-center">
-                <h1 className="text-2xl  btn rounded-md">Request</h1>
-            </div>
-            <div className="flex flex-col items-center">
-                {requestData && requestData.map((request) => {
-                    // Check if fromUserId exists before destructuring
-                    const fromUser = request.fromUserId || {};
-                    const { firstName, lastName, age, gender, skills, photo } = fromUser;
+        <div className='min-h-screen bg-base-200 pt-28 pb-10 px-4 relative'>
 
-                    return (
-                        <div
-                            role="alert"
+            {/* Modal Component */}
+            <UserDetailModal
+                user={modalUser}
+                requestId={currentRequestId}
+                onClose={closeLocalModal}
+                onReview={reviewRequest}
+            />
+
+            {/* Spinner for Modal Loading */}
+            {isModalLoading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
+                    <span className="loading loading-spinner loading-lg text-primary"></span>
+                </div>
+            )}
+
+            <div className="max-w-4xl mx-auto">
+                <h1 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                    Connection Requests
+                    <span className="badge badge-primary badge-lg text-white">{requestData.length}</span>
+                </h1>
+
+                <div className="flex flex-col gap-4">
+                    {requestData.map((request) => (
+                        <RequestCard
                             key={request._id}
-                            className="alert shadow-md m-3 border border-black rounded-lg p-4 w-full max-w-3xl flex justify-between"
-                        >
-                            <div className="flex items-center mb-3">
-                                {photo ? (
-                                    <img className="w-20 rounded-full" src={photo} alt={`${firstName || 'No'} ${lastName || 'Name'}`} />
-                                ) : (
-                                    <div className="w-20 h-20 rounded-full bg-gray-300"></div> // Placeholder if no photo
-                                )}
-                                <div className="ml-4">
-                                    <h3 className="font-bold text-xl">
-                                        {firstName ? capitalizeFirstLetter(firstName) : 'No'} {lastName ? capitalizeFirstLetter(lastName) : 'Name'}
-                                    </h3>
-                                    <div className="text-md mt-1">{age || 'N/A'}, {gender || 'N/A'}</div>
-                                    <div className="text-md mt-1">Skill: {skills?.length ? skills.join(" | ") : 'No skills listed'}</div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end space-x-2">
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => reviewRequest("accepeted", request._id)}
-                                >
-                                    Accept
-                                </button>
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => reviewRequest("rejected", request._id)}
-                                >
-                                    Reject
-                                </button>
-                            </div>
-                        </div>
-                    );
-                })}
+                            request={request}
+                            onReview={reviewRequest}
+                            // Pass the IDs securely via closure
+                            onClick={() => handleCardClick(request?.fromUserId?._id, request?._id)}
+                        />
+                    ))}
+                </div>
             </div>
-
         </div>
-
     )
 }
 

@@ -1,45 +1,47 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaCheck, FaRobot, FaStar } from 'react-icons/fa'; // Importing icons
+import { FaCheck, FaRobot, FaStar, FaCrown } from 'react-icons/fa';
 import { Base_URL } from '../../utils/helper/constant';
 
 const PremiumList = () => {
     const [isPremium, setIsPremium] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const verifyPremiumUser = async () => {
         try {
-            const res = await axios.post(Base_URL + '/payment/verify', {
-            }, {
+            const res = await axios.post(Base_URL + '/payment/premium/verify', {}, {
                 withCredentials: true
             });
-            setIsPremium(res.data.isPremium);
+            // Assuming res.data.isPremium is boolean
+            setIsPremium(!!res?.data?.isPremium);
         } catch (error) {
             console.error('Payment verification failed:', error);
+            setIsPremium(false);
+        } finally {
+            setIsLoading(false);
         }
     }
 
     useEffect(() => {
-        verifyPremiumUser()
+        verifyPremiumUser();
     }, []);
 
     const handlePayment = async (plan) => {
         try {
-
             const order = await axios.post(Base_URL + '/payment/create', {
                 memberShipType: plan
             }, {
                 withCredentials: true
             });
 
-            console.log('Order created:', order.data);
             const { keyId, amount, notes, orderId, currency } = order.data;
 
             const options = {
-                key: keyId, // Enter the Key ID generated from the Dashboard
-                amount: amount, // Amount is in currency subunits.
+                key: keyId,
+                amount: amount,
                 currency: currency,
                 name: 'DEV-TINDER',
-                description: 'Conntect to the world',
+                description: `Upgrade to ${plan} Plan`,
                 order_id: orderId,
                 prefill: {
                     name: notes.firstName + ' ' + notes.lastName,
@@ -47,114 +49,173 @@ const PremiumList = () => {
                     contact: '9999999999'
                 },
                 theme: {
-                    color: '#F37254'
+                    color: plan === 'gold' ? '#F59E0B' : '#374151'
                 },
                 handler: verifyPremiumUser
             };
 
-
             const rzp = new window.Razorpay(options);
             rzp.open();
 
-
         } catch (error) {
-
+            console.error("Payment initiation failed", error);
+            alert("Unable to initiate payment. Please try again.");
         }
     }
 
+    // --- Loading UI ---
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center min-h-[50vh]">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+            </div>
+        );
+    }
 
-    return isPremium ? (
-
-
-        <div className="bg-white mt-12 rounded-xl  " >
-            <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Choose Your Plan</h2>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-
-                {/* SILVER PLAN */}
-                <div className="border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition duration-300 flex flex-col">
-                    <div className="mb-4">
-                        <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                            Starter
-                        </span>
-                        <h3 className="text-3xl font-bold text-gray-900 mt-4">Silver</h3>
-                        <p className="text-gray-500 mt-2">Essential tools to grow your network.</p>
+    // --- Already Premium UI ---
+    if (isPremium) {
+        return (
+            <div className="flex justify-center mt-12 px-4">
+                <div className="card w-full max-w-lg bg-base-100 shadow-xl border border-success/20">
+                    <div className="card-body text-center items-center">
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                            <FaCrown className="text-3xl text-green-600" />
+                        </div>
+                        <h2 className="card-title text-2xl text-green-700">Premium Active</h2>
+                        <p className="text-gray-500">
+                            You are currently enjoying full access to all premium features.
+                        </p>
+                        <div className="mt-4 flex gap-2">
+                            <div className="badge badge-success gap-2 p-3 text-white">
+                                <FaCheck /> AI Assistant
+                            </div>
+                            <div className="badge badge-success gap-2 p-3 text-white">
+                                <FaCheck /> Verified Tick
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+        );
+    }
 
-                    <ul className="space-y-4 mb-8 flex-1">
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
-                            <span>Chat with people who are <strong>not friends</strong></span>
-                        </li>
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
-                            <span>Connect up to <strong>100 friends</strong> a day</span>
-                        </li>
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-blue-500 mt-1 flex-shrink-0" />
-                            <span>Get the <strong>Blue Verified Tick</strong></span>
-                        </li>
-                    </ul>
+    // --- Pricing Plans UI ---
+    return (
+        <div className="py-12 px-4">
+            <div className="text-center mb-12">
+                <h2 className="text-3xl font-extrabold text-base-content sm:text-4xl">
+                    Upgrade Your Experience
+                </h2>
+                <p className="mt-4 text-lg text-base-content/70">
+                    Choose the plan that fits your networking needs.
+                </p>
+            </div>
 
-                    <button onClick={() => handlePayment('silver')} className="w-full py-3 px-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition">
-                        Choose Silver
-                    </button>
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+
+                {/* --- SILVER PLAN --- */}
+                <div className="card bg-base-100 shadow-xl border border-base-200 hover:border-gray-400 transition-all duration-300">
+                    <div className="card-body">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h3 className="text-2xl font-bold text-base-content">Silver</h3>
+                                <p className="text-sm text-base-content/60 mt-1">Essential tools for networking</p>
+                            </div>
+                            <span className="badge badge-ghost font-semibold">Starter</span>
+                        </div>
+
+                        <div className="my-6">
+                            <span className="text-4xl font-extrabold text-base-content">₹199</span>
+                            <span className="text-base-content/60">/month</span>
+                        </div>
+
+                        <ul className="space-y-4 flex-1">
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
+                                <span className="text-base-content/80">Chat with non-friends</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
+                                <span className="text-base-content/80">Connect up to <strong>100 people</strong>/day</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-blue-500 mt-1 flex-shrink-0" />
+                                <span className="text-base-content/80">Blue Verified Badge</span>
+                            </li>
+                        </ul>
+
+                        <div className="card-actions mt-8">
+                            <button
+                                onClick={() => handlePayment('silver')}
+                                className="btn btn-outline btn-block hover:bg-gray-900 hover:text-white"
+                            >
+                                Get Silver
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                {/* GOLD PLAN */}
-                <div className="border-2 border-yellow-400 relative rounded-2xl p-6 shadow-xl flex flex-col bg-yellow-50/30">
-                    {/* Badge */}
+                {/* --- GOLD PLAN --- */}
+                <div className="card bg-base-100 shadow-2xl border-2 border-yellow-400 relative transform hover:-translate-y-1 transition-all duration-300">
+
+                    {/* Floating Badge */}
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <span className="bg-yellow-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-sm flex items-center gap-2">
-                            <FaStar /> Most Popular
+                        <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg flex items-center gap-1.5">
+                            <FaStar className="text-yellow-100" /> Best Value
                         </span>
                     </div>
 
-                    <div className="mb-4 mt-2">
-                        <h3 className="text-3xl font-bold text-gray-900 mt-4 flex items-center gap-2">
-                            Gold
-                        </h3>
-                        <p className="text-gray-500 mt-2">Unlock the full power of AI.</p>
+                    <div className="card-body bg-yellow-50/10">
+                        <div className="flex justify-between items-start mt-2">
+                            <div>
+                                <h3 className="text-2xl font-bold text-gray-900">Gold</h3>
+                                <p className="text-sm text-gray-500 mt-1">Unlock AI superpowers</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                <FaRobot size={20} />
+                            </div>
+                        </div>
+
+                        <div className="my-6">
+                            <span className="text-4xl font-extrabold text-gray-900">₹499</span>
+                            <span className="text-gray-500">/month</span>
+                        </div>
+
+                        <ul className="space-y-4 flex-1">
+                            <li className="flex items-start gap-3 font-medium text-gray-900">
+                                <div className="mt-1 text-yellow-500"><FaRobot /></div>
+                                <span><strong>AI Assistant</strong> Access</span>
+                            </li>
+                            <li className="divider my-0 py-0"></li>
+                            <li className="text-xs font-bold text-gray-400 uppercase tracking-wide">
+                                Everything in Silver:
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-yellow-500 mt-1 flex-shrink-0" />
+                                <span className="text-gray-700">Chat with non-friends</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-yellow-500 mt-1 flex-shrink-0" />
+                                <span className="text-gray-700">Unlimited Connections</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-blue-500 mt-1 flex-shrink-0" />
+                                <span className="text-gray-700">Blue Verified Badge</span>
+                            </li>
+                        </ul>
+
+                        <div className="card-actions mt-8">
+                            <button
+                                onClick={() => handlePayment('gold')}
+                                className="btn border-none btn-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 shadow-md"
+                            >
+                                Upgrade to Gold
+                            </button>
+                        </div>
                     </div>
-
-                    <ul className="space-y-4 mb-8 flex-1">
-                        {/* The AI Feature (Highlighted) */}
-                        <li className="flex items-start gap-3 text-gray-900 font-medium bg-yellow-100 p-2 rounded-lg -mx-2">
-                            <FaRobot className="text-yellow-600 mt-1 flex-shrink-0 text-xl" />
-                            <span>Full Access to <strong>AI Assistant</strong></span>
-                        </li>
-
-                        <li className="flex items-center gap-3 text-gray-600 text-sm">
-                            <span className="font-semibold text-gray-400 uppercase tracking-wider">Includes all Silver features:</span>
-                        </li>
-
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <span>Chat with non-friends</span>
-                        </li>
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <span>100 Connections / day</span>
-                        </li>
-                        <li className="flex items-start gap-3 text-gray-700">
-                            <FaCheck className="text-blue-500 mt-1 flex-shrink-0" />
-                            <span>Blue Verified Tick</span>
-                        </li>
-                    </ul>
-
-                    <button onClick={() => handlePayment('gold')} className="w-full py-3 px-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg transition shadow-md">
-                        Upgrade to Gold
-                    </button>
                 </div>
 
             </div>
-        </div >
-
-
-
-    ) : (
-        <div className="text-center mt-20">
-            <h2 className="text-2xl font-bold text-gray-900">You are already a Premium User!</h2>
         </div>
     );
 }

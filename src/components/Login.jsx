@@ -1,160 +1,216 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import axios from "axios"
-import { useDispatch } from 'react-redux'
-import { addUser } from '../utils/redux/slices/userSlice'
-import { Base_URL } from '../utils/helper/constant'
-import toast from 'react-hot-toast'
-import { validateLogin } from '../utils/validate/validateLogin'
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
-
+import React, { useState, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useDispatch } from 'react-redux';
+import { addUser } from '../utils/redux/slices/userSlice';
+import { Base_URL } from '../utils/helper/constant';
+import toast from 'react-hot-toast';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup"; // Import Resolver
+import * as yup from "yup"; // Import Yup
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { CgSpinner } from "react-icons/cg";
 
 const Login = () => {
-
-    const [emailId, setEmailId] = useState("")
-    const [password, setPassword] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [firstName, setFirstName] = useState("")
-    const [isLoginfrom, setLoginForm] = useState(true)
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-
+    const [isLoginfrom, setLoginForm] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // --- YUP VALIDATION SCHEMA ---
+    // We use useMemo so the schema updates when 'isLoginfrom' changes
+    const validationSchema = useMemo(() => yup.object({
+        emailId: yup.string()
+            .required("Email is required")
+            .email("Invalid email address"),
+        password: yup.string()
+            .required("Password is required")
+            .min(8, "Password must be at least 8 characters"),
+        // Conditional Validation: Only require firstName if NOT logging in
+        firstName: !isLoginfrom
+            ? yup.string().required("First Name is required").min(2, "Min 2 chars")
+            : yup.string().optional(),
+        lastName: yup.string().optional(),
+    }), [isLoginfrom]);
+
+    // Initialize React Hook Form with Yup Resolver
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset
+    } = useForm({
+        resolver: yupResolver(validationSchema)
+    });
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleLoginSubmit = async () => {
+    const toggleFormMode = () => {
+        setLoginForm(!isLoginfrom);
+        reset(); // Clear errors and inputs when switching modes
+    };
 
-        const errorMessage = validateLogin(emailId, password)
-        if (errorMessage) {
-            // return toast.(errorMessage)
-            return toast.error(
-                errorMessage
+    const onSubmit = async (data) => {
+        setIsLoading(true);
+        const { emailId, password, firstName, lastName } = data;
 
-            );
-        }
         try {
-            console.log("login called   base url", Base_URL)
-            const res = await axios.post(Base_URL + `/login`,
-                { emailId, password },
-                { withCredentials: true })
-            const userData = res?.data?.data
-            dispatch(addUser(userData))
-            navigate("/feed")
+            if (isLoginfrom) {
+                // --- LOGIN LOGIC ---
+                console.log("login called base url", Base_URL);
+                const res = await axios.post(Base_URL + `/login`,
+                    { emailId, password },
+                    { withCredentials: true }
+                );
+                const userData = res?.data?.data;
+                dispatch(addUser(userData));
+                navigate("/feed");
+                toast.success("Login Successful!");
+            } else {
+                // --- SIGNUP LOGIC ---
+                const res = await axios.post(Base_URL + "/signup",
+                    { firstName, lastName, emailId, password },
+                    { withCredentials: true }
+                );
+                dispatch(addUser(res?.data?.data));
+                navigate("/profile");
+                toast.success("Account Created Successfully!");
+            }
         } catch (error) {
-            console.error(error)
-            return toast.error(
-                error?.response?.data?.message || 'Login failed, please try again.'
+            console.error(error);
+            toast.error(
+                error?.response?.data?.message || 'Something went wrong, please try again.'
             );
+        } finally {
+            setIsLoading(false);
         }
-    }
-
-    const handleSignUp = async () => {
-        try {
-            const res = await axios.post(Base_URL + "/signup",
-                { firstName, lastName, emailId, password },
-                { withCredentials: true })
-            dispatch(addUser(res?.data?.data))
-            navigate("/profile")
-        } catch (error) {
-            console.error(error)
-            return toast.error(
-                error?.response?.data?.message || 'Login failed, please try again.'
-            );
-        }
-    }
+    };
 
     return (
-        <>
-            <div className='h-screen'>
-                <div className='flex justify-center mt-48 '>
-                    <div className="card bg-base-300 w-96 shadow-xl">
-                        <h1 className='text-xl font-medium text-center mt-7'>{isLoginfrom ? "Login" : "Sign Up"}</h1>
+        <div className='min-h-screen bg-base-200 flex items-center justify-center px-4'>
+            <div className="card bg-base-100 w-full max-w-sm shadow-2xl">
+                <div className="card-body">
+                    <h2 className='text-3xl font-bold text-center mb-6 text-primary'>
+                        {isLoginfrom ? "Welcome Back" : "Create Account"}
+                    </h2>
 
-                        <div className="card-body">
-                            {!isLoginfrom &&
-                                <>  <label className="form-control w-full max-w-xs">
-                                    <div className="label">
-                                        <span className="label-text">First Name <span className='text-red-800'>*</span></span>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+
+                        {/* Signup Specific Fields */}
+                        {!isLoginfrom && (
+                            <div className="flex gap-2">
+                                <label className="form-control w-full">
+                                    <div className="label pb-1">
+                                        <span className="label-text">First Name <span className='text-red-500'>*</span></span>
                                     </div>
                                     <input
                                         type="text"
-                                        value={firstName}
-                                        placeholder="Enter Your First Name"
-                                        className="input input-bordered w-full max-w-xs"
-                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="John"
+                                        className={`input input-bordered w-full ${errors.firstName ? 'input-error' : ''}`}
+                                        {...register("firstName")}
+                                    />
+                                    {errors.firstName && <span className="text-error text-xs mt-1">{errors.firstName.message}</span>}
+                                </label>
+
+                                <label className="form-control w-full">
+                                    <div className="label pb-1">
+                                        <span className="label-text">Last Name</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Doe"
+                                        className={`input input-bordered w-full ${errors.lastName ? 'input-error' : ''}`}
+                                        {...register("lastName")}
                                     />
                                 </label>
-                                    <label className="form-control w-full max-w-xs">
-                                        <div className="label">
-                                            <span className="label-text">Last Name <span className='text-red-800'>*</span></span>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            value={lastName}
-                                            placeholder="Enter Your Last Name"
-                                            className="input input-bordered w-full max-w-xs"
-                                            onChange={(e) => setLastName(e.target.value)}
-                                        />
-                                    </label>
-                                </>}
+                            </div>
+                        )}
 
-                            <label className="form-control w-full max-w-xs">
-                                <div className="label">
-                                    <span className="label-text">Email <span className='text-red-800'>*</span></span>
-                                </div>
-                                <input
-                                    type="text"
-                                    value={emailId}
-                                    placeholder="Enter Your Email"
-                                    className="input input-bordered w-full max-w-xs"
-                                    onChange={(e) => setEmailId(e.target.value)}
-                                />
-                            </label>
+                        {/* Email Field */}
+                        <label className="form-control w-full mt-2">
+                            <div className="label pb-1">
+                                <span className="label-text">Email <span className='text-red-500'>*</span></span>
+                            </div>
+                            <input
+                                type="email"
+                                placeholder="youremail@example.com"
+                                className={`input input-bordered w-full ${errors.emailId ? 'input-error' : ''}`}
+                                {...register("emailId")}
+                            />
+                            {errors.emailId && <span className="text-error text-xs mt-1">{errors.emailId.message}</span>}
+                        </label>
 
-                            <label className="form-control w-full max-w-xs my-2">
-                                <div className="label">
-                                    <span className="label-text">Password <span className='text-red-800'>*</span></span>
-                                </div>
-
+                        {/* Password Field */}
+                        <label className="form-control w-full mt-2 relative">
+                            <div className="label pb-1">
+                                <span className="label-text">Password <span className='text-red-500'>*</span></span>
+                            </div>
+                            <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    value={password}
                                     placeholder="Enter Password"
-                                    className="input input-bordered w-full max-w-xs pr-10"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={`input input-bordered w-full pr-10 ${errors.password ? 'input-error' : ''}`}
+                                    {...register("password")}
                                 />
                                 <button
                                     type="button"
-                                    className="absolute right-12 text-2xl  top-[248px] transform -translate-y-1/2 text-gray-500"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
                                     onClick={togglePasswordVisibility}
                                 >
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                                {isLoginfrom ?
-                                    <div className="text-end">
-                                        <Link to={``} className='label-text'>Forgot Password</Link>
-                                    </div> : null}
-
-                            </label>
-                            <div className='text-center mt-2'>
-                                <button className='btn btn-primary' onClick={isLoginfrom ? handleLoginSubmit : handleSignUp}>
-                                    {isLoginfrom ? "Login" : "Sign Up"}
+                                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
                                 </button>
                             </div>
+                            {errors.password && <span className="text-error text-xs mt-1">{errors.password.message}</span>}
+                        </label>
 
-                            <p role='button' className='m-auto py-2 hover:text-primary ' onClick={() => setLoginForm((value) => !value)}>{isLoginfrom ? "New User? Sign up Here!" : "Esisting user Login Here!"}</p>
+                        {/* Forgot Password Link */}
+                        {isLoginfrom && (
+                            <div className="text-right mt-1">
+                                <Link to="#" className='label-text text-xs hover:text-primary link link-hover'>
+                                    Forgot Password?
+                                </Link>
+                            </div>
+                        )}
+
+                        {/* Submit Button */}
+                        <div className="form-control mt-6">
+                            <button
+                                type="submit"
+                                className='btn btn-primary w-full text-white'
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="flex items-center gap-2">
+                                        <CgSpinner className="animate-spin text-xl" /> Processing...
+                                    </span>
+                                ) : (
+                                    isLoginfrom ? "Login" : "Sign Up"
+                                )}
+                            </button>
                         </div>
+                    </form>
 
+                    {/* Toggle Login/Signup */}
+                    <div className="text-center mt-4">
+                        <p className="text-sm text-gray-600">
+                            {isLoginfrom ? "New here? " : "Already have an account? "}
+                            <span
+                                role='button'
+                                className='text-primary font-medium hover:underline cursor-pointer'
+                                onClick={toggleFormMode}
+                            >
+                                {isLoginfrom ? "Sign up now" : "Login here"}
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
-
-        </>
-    )
+        </div>
+    );
 }
 
-export default Login
+export default Login;
