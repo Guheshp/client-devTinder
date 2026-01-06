@@ -17,6 +17,8 @@ import Chat from './components/Chat';
 import ChatPage from './components/chat/ChatPage';
 import PremiumList from './components/premium/PremiumList';
 import { UserProvider } from './utils/helper/UserContext.jsx';
+import AiCoach from './components/ai/AiCoach.jsx';
+
 
 // --- 1. Create the Protected Route Wrapper ---
 // Allows access only if user is logged in, otherwise sends to Login
@@ -72,6 +74,7 @@ function Main() {
           <Route path='/chat' element={<ChatPage />} />
           <Route path='/chat/:targetUserId' element={<Chat />} />
           <Route path='/premiumList' element={<PremiumList />} />
+          <Route path='/ai-coach' element={<AiCoach />} />
         </Route>
 
         {/* Fallback for unknown routes */}

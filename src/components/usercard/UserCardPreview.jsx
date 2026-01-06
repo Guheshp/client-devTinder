@@ -15,7 +15,6 @@ const UserCardPreview = ({
     onIgnore,
     onChat
 }) => {
-    console.log("UserCardPreview user:", user);
     const userDetails = useUser()
     const loggedinUser = userDetails?._id
     const userId = user._id
