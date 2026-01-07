@@ -9,7 +9,7 @@ const RequestSkeleton = () => {
 
                 <div className="flex flex-col gap-4">
                     {/* Render 3 Skeleton Cards */}
-                    {[1, 2, 3].map((item) => (
+                    {[1, 2, 3, 4, 5, 6].map((item) => (
                         <div
                             key={item}
                             className="card md:card-side bg-base-100 shadow-xl border border-gray-100 p-4 animate-pulse"

@@ -6,7 +6,7 @@ const ConnectionSkeleton = () => {
             <div className="max-w-4xl mx-auto">
                 <div className="h-8 w-48 bg-gray-300 rounded mb-6 animate-pulse"></div>
                 <div className="grid grid-cols-1 gap-4">
-                    {[1, 2, 3, 4].map((item) => (
+                    {[1, 2, 3, 4, 5, 6].map((item) => (
                         <div key={item} className="card md:card-side bg-base-100 shadow-xl border border-gray-100 p-4 items-center animate-pulse">
                             {/* Avatar */}
                             <figure className="md:w-24 flex-none m-0 flex justify-center">

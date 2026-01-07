@@ -5,7 +5,7 @@ import { BsPatchCheckFill, BsShareFill } from 'react-icons/bs'
 import { DEFAULT_IMG, skillList } from '../../utils/helper/constant'
 
 const SideProfileCard = ({ userData, stats, onShare }) => {
-
+    console.log('userData', userData)
     // Helper to process skills for display
     const getSkillNames = (skills = []) => {
         if (!Array.isArray(skills)) return []

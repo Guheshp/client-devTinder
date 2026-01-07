@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import {
     BsStars, BsRocketTakeoff, BsLightningFill, BsGraphUpArrow,
-    BsYoutube, BsPatchCheckFill, BsArrowRight
+    BsYoutube, BsCheckCircleFill, BsMortarboard, BsCpuFill,
+    BsTerminal, BsFire
 } from 'react-icons/bs';
 import { SiUdemy } from "react-icons/si";
-import { CgSpinner } from 'react-icons/cg';
-import { FaRobot } from 'react-icons/fa6';
+import { FaRobot, FaBrain } from 'react-icons/fa6';
 import toast from 'react-hot-toast';
 import { Base_URL } from '../../utils/helper/constant';
-
 
 const AiCoach = () => {
     const [roadmap, setRoadmap] = useState(null);
@@ -19,12 +18,11 @@ const AiCoach = () => {
     const generateRoadmap = async () => {
         setIsLoading(true);
         try {
-
             const res = await axios.post(
                 Base_URL + "/gemini/suggest-courses",
                 {},
                 { withCredentials: true }
-            )
+            );
             if (res.data.success) {
                 setRoadmap(res.data.data);
                 toast.success("Roadmap generated successfully!");
@@ -39,156 +37,155 @@ const AiCoach = () => {
         }
     };
 
-    // --- Helpers ---
-    // --- Helper: Robust YouTube Thumbnail Extractor ---
-    const getThumbnail = (url) => {
-        if (!url) return "https://via.placeholder.com/320x180?text=No+Thumbnail";
-
-        // Regex to extract video ID from various YouTube URL formats (v=, embed, youtu.be)
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-
-        if (match && match[2].length === 11) {
-            // Use 'hqdefault' (High Quality) instead of 'mqdefault' (Medium)
-            return `https://img.youtube.com/vi/${match[2]}/hqdefault.jpg`;
-        }
-
-        return "https://via.placeholder.com/320x180?text=Invalid+Link";
-    };
-
     const openUdemy = (title) => {
         window.open(`https://www.udemy.com/courses/search/?q=${encodeURIComponent(title)}`, '_blank');
     };
 
-    // ---------------- RENDER: LOADING STATE ----------------
+    // ---------------- RENDER: LOADING STATE (Cyberpunk Spinner) ----------------
     if (isLoading) {
         return (
-            <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-6 bg-base-100">
-                <div className="relative">
-                    <div className="w-24 h-24 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-8 bg-gray-50">
+                <div className="relative w-32 h-32">
+                    <div className="absolute inset-0 border-t-4 border-blue-500 rounded-full animate-spin"></div>
+                    <div className="absolute inset-2 border-r-4 border-purple-500 rounded-full animate-spin animation-delay-200"></div>
+                    <div className="absolute inset-4 border-l-4 border-pink-500 rounded-full animate-spin animation-delay-500"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <FaRobot className="text-4xl text-primary animate-pulse" />
+                        <FaBrain className="text-4xl text-gray-700 animate-pulse" />
                     </div>
                 </div>
-                <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold text-gray-800">Analyzing your profile...</h2>
-                    <p className="text-gray-500 max-w-md">Our AI is scanning your skills and comparing them with top-tier industry standards.</p>
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-pulse">
+                        Neural Network Processing...
+                    </h2>
+                    <p className="text-gray-500 mt-2">Analyzing your skills against 10,000+ job descriptions.</p>
                 </div>
             </div>
         );
     }
 
-    // ---------------- RENDER: FRESH / LANDING STATE ----------------
+    // ---------------- RENDER: LANDING STATE (Modern Hero) ----------------
     if (!roadmap) {
         return (
-            <div className="min-h-screen bg-base-200 py-10 px-4 flex items-center justify-center">
-                <div className="max-w-4xl w-full text-center space-y-8">
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6 ">
+                <div className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
 
-                    {/* Hero Icon */}
-                    <div className="inline-flex p-6 bg-white rounded-full shadow-xl mb-4 relative">
-                        <div className="absolute -top-2 -right-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded-full animate-bounce">NEW</div>
-                        <BsStars className="text-6xl text-yellow-500" />
-                    </div>
-
-                    {/* Headlines */}
-                    <div className="space-y-4">
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
-                            Accelerate Your Career with <span className="text-primary">AI</span>
+                    {/* Left Side: Content */}
+                    <div className="p-10 md:w-1/2 flex flex-col justify-center space-y-6">
+                        <div className="badge badge-primary badge-outline gap-2 p-3">
+                            <BsStars className="text-yellow-500" /> AI-Powered Career Coach
+                        </div>
+                        <h1 className="text-5xl font-extrabold text-gray-900 leading-tight">
+                            Level Up Your <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                                Tech Stack
+                            </span>
                         </h1>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                            Stop guessing what to learn next. Our AI analyzes your current stack and builds a
-                            <span className="font-semibold text-gray-800"> personalized curriculum </span>
-                            to help you become a top-tier developer.
+                        <p className="text-gray-600 text-lg">
+                            Don't guess what to learn. Let our AI analyze your profile and build a custom curriculum to get you hired.
                         </p>
-                    </div>
-
-                    {/* Features Grid */}
-                    <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto text-left mt-8">
-                        <div className="card bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all">
-                            <BsRocketTakeoff className="text-3xl text-blue-500 mb-3" />
-                            <h3 className="font-bold text-gray-800">Skill Gap Analysis</h3>
-                            <p className="text-sm text-gray-500">Identify exactly what you are missing to reach the next level.</p>
-                        </div>
-                        <div className="card bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all">
-                            <BsYoutube className="text-3xl text-red-500 mb-3" />
-                            <h3 className="font-bold text-gray-800">Curated Resources</h3>
-                            <p className="text-sm text-gray-500">Get specific, high-quality video tutorials and courses.</p>
-                        </div>
-                        <div className="card bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all">
-                            <BsGraphUpArrow className="text-3xl text-green-500 mb-3" />
-                            <h3 className="font-bold text-gray-800">Career Growth</h3>
-                            <p className="text-sm text-gray-500">Focus on skills that actually increase your market value.</p>
-                        </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <div className="pt-8">
                         <button
                             onClick={generateRoadmap}
-                            className="btn btn-primary btn-lg px-10 text-lg shadow-xl shadow-primary/30 hover:scale-105 transition-transform"
+                            className="btn btn-primary btn-lg shadow-lg shadow-blue-500/30 border-none bg-gradient-to-r from-blue-600 to-purple-600 hover:scale-105 transition-transform"
                         >
-                            <BsStars /> Generate My Roadmap
+                            <BsRocketTakeoff /> Generate My Roadmap
                         </button>
-                        <p className="text-xs text-gray-400 mt-3">Powered by Google Gemini 2.5</p>
+                    </div>
+
+                    {/* Right Side: Visuals */}
+                    <div className="md:w-1/2 bg-gray-900 p-10 flex flex-col justify-center relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-200"></div>
+
+                        <div className="space-y-4 relative z-10">
+                            <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700 flex items-center gap-4 text-white">
+                                <div className="p-3 bg-red-500/20 rounded-lg text-red-400"><BsFire size={24} /></div>
+                                <div>
+                                    <h3 className="font-bold">Hot Skills</h3>
+                                    <p className="text-xs text-gray-400">Target what's in demand</p>
+                                </div>
+                            </div>
+                            <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700 flex items-center gap-4 text-white ml-8">
+                                <div className="p-3 bg-green-500/20 rounded-lg text-green-400"><BsGraphUpArrow size={24} /></div>
+                                <div>
+                                    <h3 className="font-bold">Career Growth</h3>
+                                    <p className="text-xs text-gray-400">Salary optimization</p>
+                                </div>
+                            </div>
+                            <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl border border-gray-700 flex items-center gap-4 text-white">
+                                <div className="p-3 bg-blue-500/20 rounded-lg text-blue-400"><BsTerminal size={24} /></div>
+                                <div>
+                                    <h3 className="font-bold">Resource Finder</h3>
+                                    <p className="text-xs text-gray-400">Curated tutorials</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         );
     }
 
-    // ---------------- RENDER: RESULTS / DASHBOARD STATE ----------------
+    // ---------------- RENDER: DASHBOARD STATE ----------------
     return (
-        <div className="min-h-screen bg-gray-50 py-10 px-4">
-            <div className="max-w-6xl mx-auto space-y-10 animate-fade-in-up">
+        <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-10  pt-28 ">
+            <div className="max-w-7xl mx-auto space-y-12 animate-fade-in-up">
 
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-end border-b border-gray-200 pb-6 gap-4">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                            Your Personalized Roadmap
-                            <span className="badge badge-warning text-xs font-bold gap-1"><FaRobot /> AI Generated</span>
+                            Your Personal <span className="text-blue-600">Action Plan</span>
                         </h1>
-                        <p className="text-gray-500 mt-2">Based on your unique profile, prioritize these skills to level up.</p>
+                        <p className="text-gray-500 mt-1">
+                            We identified <span className="font-bold text-gray-800">{roadmap.mustHave?.length || 0} critical skills</span> missing from your arsenal.
+                        </p>
                     </div>
-                    <button onClick={generateRoadmap} className="btn btn-outline btn-sm gap-2">
-                        Refresh Analysis
+                    <button onClick={generateRoadmap} className="btn btn-ghost hover:bg-gray-100 gap-2 mt-4 md:mt-0">
+                        <BsStars className="text-purple-500" /> Regenerate
                     </button>
                 </div>
 
-                {/* 1. MUST HAVE Section (Grid of Cards) */}
+                {/* 1. MUST HAVE (The "Action" Grid) */}
                 <section>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <span className="p-2 bg-red-100 text-red-600 rounded-lg"><BsLightningFill /></span>
-                        Critical Focus Areas
-                    </h2>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-rose-100 text-rose-600 rounded-xl">
+                            <BsLightningFill size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Immediate Priority</h2>
+                            <p className="text-sm text-gray-500">Learn these to unlock 80% more opportunities.</p>
+                        </div>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {roadmap.mustHave?.map((item, index) => (
-                            <div key={index} className="card bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group">
-                                {/* Thumbnail */}
-                                <div className="relative h-48 w-full bg-gray-900 overflow-hidden">
-                                    <img
-                                        src={getThumbnail(item.youtube?.url)}
-                                        alt={item.skill}
-                                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                                    />
-                                    <div className="absolute top-3 right-3 badge badge-error text-white font-bold shadow-sm">Must Have</div>
-                                </div>
+                            <div key={index}
+                                className="group relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden"
+                            >
+                                {/* Decorative Gradient Top Bar */}
+                                <div className={`h-2 w-full bg-gradient-to-r ${index % 2 === 0 ? 'from-rose-500 to-orange-500' : 'from-purple-500 to-indigo-500'}`}></div>
 
-                                <div className="card-body p-6">
-                                    <h3 className="card-title text-xl font-bold text-gray-800 mb-2">{item.skill}</h3>
-                                    <p className="text-gray-600 text-sm mb-6 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        "{item.reason}"
-                                    </p>
+                                <div className="p-6">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                                            {item.skill}
+                                        </h3>
+                                        <span className="badge badge-error badge-sm text-white whitespace-nowrap font-bold">HIGH IMPACT</span>
+                                    </div>
 
-                                    <div className="grid grid-cols-2 gap-3 mt-auto">
+                                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
+                                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Why this matters</h4>
+                                        <p className="text-gray-700 italic">"{item.reason}"</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
                                         <a href={item.youtube?.url} target="_blank" rel="noreferrer"
-                                            className="btn btn-error btn-outline btn-sm gap-2 hover:text-white">
-                                            <BsYoutube className="text-lg" /> Watch Tutorial
+                                            className="btn btn-outline hover:bg-red-50 hover:text-red-600 hover:border-red-200 border-gray-200 gap-2 normal-case font-medium">
+                                            <BsYoutube className="text-red-600 text-xl" /> Free Tutorial
                                         </a>
                                         <button onClick={() => openUdemy(item.udemy?.title)}
-                                            className="btn btn-primary btn-sm gap-2 text-white bg-purple-600 hover:bg-purple-700 border-none">
-                                            <SiUdemy className="text-lg" /> Udemy Course
+                                            className="btn bg-gray-900 hover:bg-black text-white gap-2 border-none normal-case font-medium shadow-lg shadow-gray-400/20">
+                                            <SiUdemy className="text-purple-400 text-xl" /> Full Course
                                         </button>
                                     </div>
                                 </div>
@@ -197,56 +194,67 @@ const AiCoach = () => {
                     </div>
                 </section>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                    {/* 2. RECOMMENDED Section (Vertical List) */}
-                    <section className="md:col-span-2">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <span className="p-2 bg-blue-100 text-blue-600 rounded-lg"><BsGraphUpArrow /></span>
-                            Recommended Next Steps
-                        </h2>
-                        <div className="flex flex-col gap-3">
+                <div className="grid md:grid-cols-12 gap-8">
+                    {/* 2. RECOMMENDED (Growth Track) */}
+                    <div className="md:col-span-8">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+                                <BsGraphUpArrow size={24} />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900">Career Growth</h2>
+                                <p className="text-sm text-gray-500">Skills that differentiate you from juniors.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-4">
                             {roadmap.recommended?.map((item, index) => (
-                                <div key={index} className="card bg-white border border-gray-100 p-4 shadow-sm hover:border-blue-200 transition-colors flex flex-row items-start gap-4">
+                                <div key={index} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-start gap-4 hover:border-blue-300 transition-all cursor-default">
                                     <div className="mt-1">
-                                        <BsPatchCheckFill className="text-blue-500 text-xl" />
+                                        <BsCheckCircleFill className="text-blue-500 text-xl opacity-20" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-gray-800 text-lg">{item.skill}</h4>
-                                        <p className="text-sm text-gray-500 mt-1">{item.reason}</p>
+                                        <p className="text-gray-500 mt-1 text-sm leading-relaxed">{item.reason}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </section>
+                    </div>
 
-                    {/* 3. GOOD TO KNOW Section (Compact) */}
-                    <section>
-                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <span className="p-2 bg-green-100 text-green-600 rounded-lg"><BsStars /></span>
-                            Bonus Skills
-                        </h2>
-                        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm h-full">
-                            <div className="flex flex-col gap-4">
+                    {/* 3. GOOD TO KNOW (Side Quest) */}
+                    <div className="md:col-span-4">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-full">
+                            <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+                                <div className="p-2 bg-green-100 text-green-600 rounded-lg">
+                                    <BsMortarboard size={20} />
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-900">Bonus Skills</h2>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
                                 {roadmap.goodToKnow?.map((item, index) => (
-                                    <div key={index} className="group">
-                                        <div className="flex items-center justify-between mb-1 cursor-help">
-                                            <span className="font-semibold text-gray-700 group-hover:text-green-600 transition-colors">
-                                                {item.skill}
-                                            </span>
-                                            <BsArrowRight className="text-gray-300 group-hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all" />
-                                        </div>
-                                        <p className="text-xs text-gray-400 leading-snug">{item.reason}</p>
-                                        {index !== roadmap.goodToKnow.length - 1 && <div className="divider my-2"></div>}
+                                    <div key={index} className="badge badge-lg  bg-gray-50 border-gray-200 text-gray-600 hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors cursor-help tooltip" data-tip={item.reason}>
+                                        {item.skill}
                                     </div>
                                 ))}
                             </div>
+
+                            <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                <div className="flex gap-2">
+                                    <FaRobot className="text-blue-500 text-xl" />
+                                    <p className="text-xs text-blue-800 font-medium">
+                                        Pro Tip: Focus on the "Immediate Priority" section first. Don't get overwhelmed!
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </section>
+                    </div>
                 </div>
 
             </div>
         </div>
     );
 };
-// Exporting cleanly if needed elsewhere
+
 export default AiCoach;

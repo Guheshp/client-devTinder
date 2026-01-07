@@ -9,7 +9,7 @@ import { Base_URL } from '../utils/helper/constant'
 import RequestSkeleton from './skeleton/RequestSkeleton'
 
 import RequestCard from './request/RequestCard'
-import UserDetailModal from './request/UserDetailModal'
+import RequestDetailModal from './request/RequestDetailModal'
 
 const Request = () => {
     const dispatch = useDispatch()
@@ -110,7 +110,7 @@ const Request = () => {
         <div className='min-h-screen bg-base-200 pt-28 pb-10 px-4 relative'>
 
             {/* Modal Component */}
-            <UserDetailModal
+            <RequestDetailModal
                 user={modalUser}
                 requestId={currentRequestId}
                 onClose={closeLocalModal}

@@ -43,7 +43,7 @@ const profileSchema = yup.object({
     experienceLevel: yup.string().nullable(),
     bio: yup.string().required('Bio is required').max(500, 'Bio is too long'),
     skills: yup.array().of(yup.string()).nullable(),
-    state: yup.string().nullable(),
+    state: yup.string().required("State is required"),
     country: yup.string().nullable(),
 
     // --- Social Validations ---
@@ -195,8 +195,17 @@ const ProfilePage = () => {
                                     <SelectField label="Gender" name="gender" register={register} options={genderList} error={errors.gender} />
 
                                     <div className="grid grid-cols-2 gap-4 col-span-1 md:col-span-2">
-                                        <SelectField label="State" name="state" register={register} options={stateList} error={errors.state} />
-                                        <InputField label="Country" name="country" register={register} disabled className="bg-gray-100 cursor-not-allowed text-gray-500" />
+
+                                        <SelectField
+                                            label="State"
+                                            name="state"
+                                            register={register}
+                                            required
+                                            options={stateList}
+                                            error={errors.state} />
+
+                                        <InputField label="Country" name="country" required register={register} disabled className="bg-gray-100 cursor-not-allowed text-gray-500" />
+
                                     </div>
                                 </div>
                             </div>
