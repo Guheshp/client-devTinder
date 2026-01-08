@@ -53,7 +53,7 @@ const ConnectionCard = ({ connection, onClick }) => {
             {/* Info */}
             <div className="card-body py-2 px-4 md:px-6 flex-1 text-center md:text-left w-full">
                 {/* 2. Updated h2 layout for alignment */}
-                <h2 className="card-title text-xl font-bold justify-center md:justify-start text-gray-800 flex items-center flex-wrap gap-1">
+                <h2 className="card-title text-xl font-bold justify-center md:justify-start flex items-center flex-wrap gap-1">
                     {capitalize(firstName)} {capitalize(lastName)}
 
                     {/* 3. Conditionally render the blue tick */}

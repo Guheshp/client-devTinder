@@ -59,7 +59,7 @@ const RequestDetailModal = ({ user, requestId, onClose, onReview }) => {
                         </div>
                         <div className="mt-1 space-y-2 w-full">
                             <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="font-bold text-2xl text-gray-800 flex items-center gap-2">
+                                <h3 className="font-bold text-2xl  flex items-center gap-2">
                                     {capitalize(firstName)} {capitalize(lastName)}
                                 </h3>
                                 {isPremium && <BsPatchCheckFill className="text-blue-500 text-xl" title="Premium Member" />}
@@ -89,7 +89,7 @@ const RequestDetailModal = ({ user, requestId, onClose, onReview }) => {
 
                     {(githubUrl || linkedinUrl || twitterUrl || portfolioUrl) && (
                         <div>
-                            <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsLink45Deg className="text-xl" /> Social Presence</h4>
+                            <h4 className="font-bold mb-3 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsLink45Deg className="text-xl" /> Social Presence</h4>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                 {githubUrl && <a href={githubUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline flex items-center gap-2 w-full"><FaGithub /> GitHub</a>}
                                 {linkedinUrl && <a href={linkedinUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline btn-info flex items-center gap-2 w-full"><FaLinkedin /> LinkedIn</a>}
@@ -99,12 +99,12 @@ const RequestDetailModal = ({ user, requestId, onClose, onReview }) => {
                         </div>
                     )}
                     <div>
-                        <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsInfoCircle /> About</h4>
+                        <h4 className="font-bold  mb-2 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsInfoCircle /> About</h4>
                         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap bg-base-200/50 p-4 rounded-xl border border-base-200">{bio || "No bio provided."}</p>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsCodeSlash /> Skills & Tech</h4>
+                        <h4 className="font-bold  mb-3 flex items-center gap-2 text-sm uppercase tracking-wide opacity-70"><BsCodeSlash /> Skills & Tech</h4>
                         <div className="flex flex-wrap gap-2">
                             {skills?.length > 0 ? skills.map((skillId, i) => (
                                 <span key={i} className="badge badge-lg badge-outline py-4 px-4 hover:bg-primary hover:text-white cursor-default select-none">

@@ -71,7 +71,7 @@ const Connections = () => {
                     <div className="bg-primary/10 p-4 rounded-full inline-block mb-4">
                         <BsPeopleFill className="text-5xl text-primary" />
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-800">No Connections Yet</h1>
+                    <h1 className="text-2xl font-bold">No Connections Yet</h1>
                     <Link to="/feed" className="btn btn-primary w-full text-white mt-4">Find Connections</Link>
                 </div>
             </div>
@@ -82,7 +82,7 @@ const Connections = () => {
         <div className="min-h-screen bg-base-200 pt-28 pb-10 px-4">
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center gap-3 mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">My Connections</h1>
+                    <h1 className="text-2xl font-bold">My Connections</h1>
                     <div className="badge badge-primary badge-lg text-white">{connectionData.length}</div>
                 </div>
 

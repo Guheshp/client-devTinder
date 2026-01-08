@@ -35,7 +35,7 @@ const FeedSkeleton = () => {
                         <div className='w-[30%] flex flex-col gap-4'>
 
                             {/* Profile Card */}
-                            <div className="card bg-base-100 shadow-xl border border-base-200 h-[300px] p-4 flex flex-col items-center overflow-hidden relative">
+                            <div className="card bg-base-100 shadow-xl border border-base-200 h-[400px] p-4 flex flex-col items-center overflow-hidden relative">
                                 {/* Header Banner Strip */}
                                 <ShimmerBlock className="absolute top-0 left-0 w-full h-14 opacity-50" />
 
@@ -55,6 +55,10 @@ const FeedSkeleton = () => {
 
                                 {/* Menu Lines */}
                                 <div className="w-full mt-8 space-y-4 px-2">
+                                    <div className='flex justify-between items-center'>
+                                        <ShimmerBlock className="h-3 w-1/3 rounded" />
+                                        <ShimmerBlock className="h-3 w-6 rounded-full" />
+                                    </div>
                                     <div className='flex justify-between items-center'>
                                         <ShimmerBlock className="h-3 w-1/3 rounded" />
                                         <ShimmerBlock className="h-3 w-6 rounded-full" />

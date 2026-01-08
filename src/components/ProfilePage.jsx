@@ -173,7 +173,7 @@ const ProfilePage = () => {
 
                             {/* Personal Details */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 mb-3">Personal Details</h3>
+                                <h3 className="text-lg font-semibold mb-3">Personal Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <InputField
                                         label="First Name"
@@ -214,7 +214,7 @@ const ProfilePage = () => {
 
                             {/* Professional Info */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 mb-3">Professional Info</h3>
+                                <h3 className="text-lg font-semibold  mb-3">Professional Info</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                                     <div className="md:col-span-2">
@@ -271,7 +271,7 @@ const ProfilePage = () => {
 
                             {/* --- Social Links --- */}
                             <div>
-                                <h3 className="text-lg font-semibold text-gray-700 mb-3">Social Presence</h3>
+                                <h3 className="text-lg font-semibold  mb-3">Social Presence</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="form-control w-full">
                                         <label className="label font-medium pb-1">

@@ -134,7 +134,7 @@ const Chat = () => {
             <div className="flex flex-col w-full max-w-4xl bg-base-100 shadow-xl rounded-xl overflow-hidden h-[85vh] md:h-[90vh]">
 
                 {/* --- HEADER --- */}
-                <div className="bg-white border-b border-base-200 px-4 py-3 flex items-center justify-between shrink-0 z-10">
+                <div className="bg-base-100 border-b border-base-200 px-4 py-3 flex items-center justify-between shrink-0 z-10">
                     <div className="flex items-center gap-3">
                         <button onClick={() => navigate(-1)} className="btn btn-circle btn-ghost btn-sm md:hidden">
                             <BsArrowLeft className="text-xl" />
@@ -151,7 +151,7 @@ const Chat = () => {
                         </div>
 
                         <div>
-                            <h3 className="font-bold text-gray-800 leading-tight">
+                            <h3 className="font-bold  leading-tight">
                                 {targetUserProfile ? `${targetUserProfile.firstName} ${targetUserProfile.lastName || ''}` : 'Chat'}
                             </h3>
                             {/* <p className="text-xs text-green-500 font-medium flex items-center gap-1">
@@ -166,7 +166,7 @@ const Chat = () => {
                 </div>
 
                 {/* --- MESSAGES AREA --- */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F3F4F6] relative">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-base-100 relative">
                     {messages.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full text-gray-400 opacity-60">
                             <p className="text-sm">No messages yet.</p>
@@ -202,7 +202,7 @@ const Chat = () => {
                 </div>
 
                 {/* --- INPUT AREA --- */}
-                <div className="p-3 bg-white border-t border-base-200">
+                <div className="p-3 bg-base-100 border-t border-base-200">
                     <div className="join w-full shadow-sm rounded-full overflow-hidden border border-gray-200 focus-within:border-primary transition-colors">
                         <input
                             value={message}

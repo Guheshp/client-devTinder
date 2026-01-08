@@ -19,7 +19,7 @@ const ThemeToggle = () => {
         // <button onClick={toggleTheme} className="btn">
         //     Switch to {theme === 'light' ? 'dark' : 'light'} theme
         // </button>
-        <div className='mx-12 text-2xl'>
+        <div className='mx-6 text-2xl'>
             <SunIcon className={theme === 'light' ? 'size-5 hover:text-black' : 'size-5 hover:text-white'} onClick={toggleTheme} />
         </div>
     );

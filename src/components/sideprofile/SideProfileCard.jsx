@@ -5,7 +5,6 @@ import { BsPatchCheckFill, BsShareFill } from 'react-icons/bs'
 import { DEFAULT_IMG, skillList } from '../../utils/helper/constant'
 
 const SideProfileCard = ({ userData, stats, onShare }) => {
-    console.log('userData', userData)
     // Helper to process skills for display
     const getSkillNames = (skills = []) => {
         if (!Array.isArray(skills)) return []
@@ -72,7 +71,7 @@ const SideProfileCard = ({ userData, stats, onShare }) => {
                 <li>
                     <Link to="/connections" className="flex items-center justify-between active:bg-primary/10 active:text-primary">
                         <div className="flex items-center gap-3">
-                            <MdPeople className="text-xl" /> <span>Connections</span>
+                            <MdPeople className="text-xl text-primary" /> <span>Connections</span>
                         </div>
                         <span className="badge badge-ghost badge-sm">{stats.connectionCount}</span>
                     </Link>
@@ -80,7 +79,7 @@ const SideProfileCard = ({ userData, stats, onShare }) => {
                 <li>
                     <Link to="/requests" className="flex items-center justify-between active:bg-primary/10 active:text-primary">
                         <div className="flex items-center gap-3">
-                            <MdPersonAdd className="text-xl" /> <span>Requests</span>
+                            <MdPersonAdd className="text-xl text-primary" /> <span>Requests</span>
                         </div>
                         {stats.requestCount > 0 && (
                             <span className="badge badge-secondary badge-sm text-white">{stats.requestCount}</span>

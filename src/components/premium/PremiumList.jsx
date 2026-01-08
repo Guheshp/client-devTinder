@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FaCheck, FaRobot, FaStar, FaCrown, FaLock } from 'react-icons/fa';
 import { Base_URL } from '../../utils/helper/constant';
+import PremiumSkeleton from '../skeleton/PremiumSkeleton';
 
 const PremiumList = () => {
     const [isPremium, setIsPremium] = useState(false);
@@ -67,16 +68,14 @@ const PremiumList = () => {
     // --- Loading UI ---
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-[50vh]">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
+            <PremiumSkeleton />
         );
     }
 
     // --- Already Premium UI ---
     if (isPremium) {
         return (
-            <div className="flex justify-center mt-12 px-4">
+            <div className="flex justify-center mt-14 px-4">
                 <div className="card w-full max-w-lg bg-base-100 shadow-xl border border-success/20">
                     <div className="card-body text-center items-center">
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
@@ -102,7 +101,7 @@ const PremiumList = () => {
 
     // --- Pricing Plans UI ---
     return (
-        <div className="py-12 px-4">
+        <div className="py-12 px-4 mt-14">
             <div className="text-center mb-12">
                 <h2 className="text-3xl font-extrabold text-base-content sm:text-4xl">
                     Upgrade Your Experience
@@ -142,11 +141,15 @@ const PremiumList = () => {
                             </li>
                             <li className="flex items-start gap-3">
                                 <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
-                                <span className="text-base-content/80">Unlimited Connection Requests</span>
+                                <span className="text-base-content/80">100 Connection Requests Per Day</span>
                             </li>
                             <li className="flex items-start gap-3">
                                 <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
                                 <span className="text-base-content/80">Chat with anyone (No match needed)</span>
+                            </li>
+                            <li className="flex items-start gap-3">
+                                <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
+                                <span className="text-base-content/80">Search for specific users & skills</span>
                             </li>
                         </ul>
 

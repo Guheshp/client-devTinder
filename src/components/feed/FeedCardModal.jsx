@@ -72,7 +72,7 @@ const FeedCardModal = ({
                     {/* --- 3. SOCIAL LINKS SECTION (New) --- */}
                     {(githubUrl || linkedinUrl || twitterUrl || portfolioUrl) && (
                         <div className="mb-6">
-                            <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2"><BsLink45Deg /> Socials</h4>
+                            <h4 className="font-bold mb-2 flex items-center gap-2"><BsLink45Deg /> Social Presence</h4>
                             <div className="flex gap-4">
                                 {githubUrl && (
                                     <a href={githubUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline gap-2">
@@ -99,14 +99,14 @@ const FeedCardModal = ({
                     )}
 
                     <div className="mb-6">
-                        <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2"><BsInfoCircle /> About</h4>
+                        <h4 className="font-bold  mb-2 flex items-center gap-2"><BsInfoCircle /> About</h4>
                         <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
                             {bio || "This user hasn't written a bio yet."}
                         </p>
                     </div>
 
                     <div className="mb-6">
-                        <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                        <h4 className="font-bold  mb-2 flex items-center gap-2">
                             <BsBriefcase /> Skills ({allSkillNames.length})
                         </h4>
                         <div className="flex flex-wrap gap-2">

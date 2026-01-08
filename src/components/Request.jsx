@@ -125,7 +125,7 @@ const Request = () => {
             )}
 
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                <h1 className="text-2xl font-bold mb-6  flex items-center gap-2">
                     Connection Requests
                     <span className="badge badge-primary badge-lg text-white">{requestData.length}</span>
                 </h1>

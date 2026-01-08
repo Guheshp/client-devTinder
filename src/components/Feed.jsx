@@ -7,18 +7,20 @@ import { BsHourglassSplit, BsGem, BsEmojiFrown } from "react-icons/bs"
 
 import SideProfile from './SideProfile'
 import RightFeed from './RightFeed'
-import useFetchStocks from './customhooks/useFetchStocks'
+
+
 import FeedSkeleton from './skeleton/FeedSkeleton'
 import Main from './feed/Main'
 import { Link } from 'react-router-dom'
 import FeedCardSkeleton from './skeleton/FeedCardSkeleton'
+
+
 
 const Feed = () => {
     const dispatch = useDispatch()
     const feed = useSelector((store) => store.feed.feed)
     // 1. Get the logged-in user from Redux to check premium status
     const user = useSelector((store) => store.user.user)
-    const { stockApi } = useFetchStocks()
 
     // --- State ---
     const [loading, setLoading] = useState(false)
@@ -78,7 +80,7 @@ const Feed = () => {
 
                     {/* Left Sidebar */}
                     <div className='w-[30%]'>
-                        <SideProfile stockApi={stockApi} />
+                        <SideProfile />
                     </div>
 
                     {/* Main Content Area */}
