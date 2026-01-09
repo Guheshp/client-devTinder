@@ -26,10 +26,10 @@ const SuggestedSkills = () => {
     if (skills.length === 0) return null
 
     return (
-        <div className="card bg-base-100 shadow-xl border border-base-200">
-            <div className="card-body p-5">
-                <h3 className="card-title text-base font-bold flex items-center gap-2">
-                    <BsLightbulb className="text-yellow-400" />
+        <div className="card w-full bg-base-100 shadow-md border border-base-200">
+            <div className="card-body p-4">
+                <h3 className="card-title text-sm font-bold flex items-center gap-2 text-gray-800">
+                    <BsLightbulb className="text-yellow-500" />
                     Recommended Skills
                 </h3>
 
@@ -42,7 +42,7 @@ const SuggestedSkills = () => {
                         <span
                             // Use skill.id for the unique key
                             key={skill.id}
-                            className="badge badge-ghost badge-sm border-gray-300 py-3 cursor-pointer hover:bg-base-200"
+                            className="badge badge-ghost badge-sm text-xs font-medium border-gray-300 py-3 px-3 cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-colors duration-200"
                         >
                             {/* Use skill.name directly from the backend object */}
                             + {skill.name}

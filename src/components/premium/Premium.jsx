@@ -10,7 +10,7 @@ const Premium = () => {
     if (!user) return null;
 
     return (
-        <div className="w-full ">
+        <div className="w-full">
             {user.isPremium ? (
                 // 1. If Premium -> Show Status + AI Link
                 <PremiumStatusCard user={user} />

@@ -32,21 +32,23 @@ const FeedCardModal = ({
 
     return (
         <dialog id={modalId} className="modal modal-bottom sm:modal-middle">
-            <div className="modal-box w-11/12 max-w-2xl bg-base-100 p-0 overflow-hidden">
+            {/* Changed: w-full on mobile, max-w-3xl on desktop. Added max-height constraint */}
+            <div className="modal-box w-full sm:w-11/12 max-w-3xl bg-base-100 p-0 overflow-hidden flex flex-col max-h-[90vh]">
 
-                <div className="bg-primary/10 p-6 flex items-start gap-4 relative">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={closeModal}>
+                {/* Header */}
+                <div className="bg-primary/10 p-4 md:p-6 flex items-start gap-4 relative flex-shrink-0">
+                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10" onClick={closeModal}>
                         <BsX className="text-2xl" />
                     </button>
                     <div className="avatar">
-                        <div className={`w-24 h-24 rounded-full ring ring-offset-base-100 ring-offset-2 ${isPremium ? 'ring-blue-500' : 'ring-primary'}`}>
-                            <img src={photo || DEFAULT_IMG} alt="Profile" />
+                        <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full ring ring-offset-base-100 ring-offset-2 ${isPremium ? 'ring-blue-500' : 'ring-primary'}`}>
+                            <img src={photo || DEFAULT_IMG} alt="Profile" className="object-cover" />
                         </div>
                     </div>
-                    <div className="mt-2">
-                        <h3 className="font-bold text-2xl flex items-center gap-2">
+                    <div className="mt-1 md:mt-2 flex-1">
+                        <h3 className="font-bold text-xl md:text-2xl flex flex-wrap items-center gap-2">
                             {capitalize(firstName)} {capitalize(lastName)}
-                            {isPremium && <BsPatchCheckFill className="text-blue-500 text-xl" />}
+                            {isPremium && <BsPatchCheckFill className="text-blue-500 text-lg md:text-xl" />}
                             <span className="badge badge-secondary text-xs">{percentage}% Match</span>
                         </h3>
 
@@ -55,11 +57,11 @@ const FeedCardModal = ({
                                 <span className={`badge ${planDetails.badgeClass} badge-sm gap-1 text-xs uppercase font-bold`}>
                                     <BsGem /> {memberShipType}
                                 </span>
-                                <span className="text-xs text-gray-500">Paid: {planDetails.price}</span>
+                                <span className="text-xs text-gray-500 hidden sm:inline">Paid: {planDetails.price}</span>
                             </div>
                         )}
 
-                        <div className="flex flex-wrap gap-2 mt-2 text-sm text-gray-600">
+                        <div className="flex flex-wrap gap-2 mt-2 text-xs md:text-sm text-gray-600">
                             <span>{age ? `${age} yrs` : ''}</span>
                             {gender && <span>• {capitalize(gender)}</span>}
                             {location?.state && <span>• {capitalize(location.state)}, {capitalize(location.country)}</span>}
@@ -67,31 +69,32 @@ const FeedCardModal = ({
                     </div>
                 </div>
 
-                <div className="p-6 max-h-[60vh] overflow-y-auto">
+                {/* Scrollable Content */}
+                <div className="p-4 md:p-6 overflow-y-auto custom-scrollbar flex-grow">
 
-                    {/* --- 3. SOCIAL LINKS SECTION (New) --- */}
+                    {/* --- SOCIAL LINKS SECTION --- */}
                     {(githubUrl || linkedinUrl || twitterUrl || portfolioUrl) && (
                         <div className="mb-6">
-                            <h4 className="font-bold mb-2 flex items-center gap-2"><BsLink45Deg /> Social Presence</h4>
-                            <div className="flex gap-4">
+                            <h4 className="font-bold mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-gray-500"><BsLink45Deg className="text-lg" /> Social Presence</h4>
+                            <div className="flex flex-wrap gap-3">
                                 {githubUrl && (
                                     <a href={githubUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline gap-2">
-                                        <FaGithub /> GitHub
+                                        <FaGithub /> <span className="hidden sm:inline">GitHub</span>
                                     </a>
                                 )}
                                 {linkedinUrl && (
                                     <a href={linkedinUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline btn-info gap-2">
-                                        <FaLinkedin /> LinkedIn
+                                        <FaLinkedin /> <span className="hidden sm:inline">LinkedIn</span>
                                     </a>
                                 )}
                                 {twitterUrl && (
                                     <a href={twitterUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline btn-info gap-2">
-                                        <FaTwitter /> Twitter
+                                        <FaTwitter /> <span className="hidden sm:inline">Twitter</span>
                                     </a>
                                 )}
                                 {portfolioUrl && (
                                     <a href={portfolioUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline btn-success gap-2">
-                                        <FaGlobe /> Portfolio
+                                        <FaGlobe /> <span className="hidden sm:inline">Portfolio</span>
                                     </a>
                                 )}
                             </div>
@@ -99,20 +102,20 @@ const FeedCardModal = ({
                     )}
 
                     <div className="mb-6">
-                        <h4 className="font-bold  mb-2 flex items-center gap-2"><BsInfoCircle /> About</h4>
-                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
+                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide text-gray-500"><BsInfoCircle /> About</h4>
+                        <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
                             {bio || "This user hasn't written a bio yet."}
                         </p>
                     </div>
 
-                    <div className="mb-6">
-                        <h4 className="font-bold  mb-2 flex items-center gap-2">
+                    <div className="mb-2">
+                        <h4 className="font-bold mb-3 flex items-center gap-2 text-sm uppercase tracking-wide text-gray-500">
                             <BsBriefcase /> Skills ({allSkillNames.length})
                         </h4>
                         <div className="flex flex-wrap gap-2">
                             {allSkillNames.length > 0 ? (
                                 allSkillNames.map((skill, index) => (
-                                    <span key={index} className={`badge ${commonSkillNames.includes(skill) ? 'badge-accent text-white' : 'badge-outline'} badge-lg py-3`}>
+                                    <span key={index} className={`badge ${commonSkillNames.includes(skill) ? 'badge-accent text-white' : 'badge-outline'} badge-md md:badge-lg py-3`}>
                                         {skill}
                                     </span>
                                 ))
@@ -123,13 +126,14 @@ const FeedCardModal = ({
                     </div>
                 </div>
 
-                <div className="modal-action bg-base-200 p-4 m-0 flex justify-between items-center">
-                    <button className="btn btn-ghost" onClick={onChat}>
+                {/* Footer Actions */}
+                <div className="modal-action bg-base-200 p-4 m-0 flex flex-col-reverse sm:flex-row justify-between items-center gap-3 flex-shrink-0">
+                    <button className="btn btn-ghost btn-sm sm:btn-md w-full sm:w-auto" onClick={onChat}>
                         <BsChatDots className="text-lg mr-2" /> Message
                     </button>
-                    <div className="flex gap-2">
-                        <button className="btn btn-outline btn-error" onClick={() => { onIgnore(); closeModal(); }}>Ignore</button>
-                        <button className="btn btn-primary text-white px-8" onClick={() => { onConnect(); closeModal(); }}>Connect</button>
+                    <div className="flex gap-3 w-full sm:w-auto">
+                        <button className="btn btn-outline btn-error btn-sm sm:btn-md flex-1 sm:flex-none" onClick={() => { onIgnore(); closeModal(); }}>Ignore</button>
+                        <button className="btn btn-primary text-white btn-sm sm:btn-md flex-1 sm:flex-none px-8" onClick={() => { onConnect(); closeModal(); }}>Connect</button>
                     </div>
                 </div>
             </div>

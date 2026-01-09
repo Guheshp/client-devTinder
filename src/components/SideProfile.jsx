@@ -74,7 +74,7 @@ const SideProfile = () => {
     // if (isLoading || !userData) return <SideProfileSkeleton />
 
     return (
-        <div className="w-full flex flex-col gap-4">
+        <div className="w-full h-fit flex flex-col gap-4">
             {/* 1. Main Profile Info */}
             <SideProfileCard
                 userData={userData}

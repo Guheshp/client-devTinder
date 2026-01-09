@@ -74,17 +74,24 @@ const Feed = () => {
     if (loading && params.page === 1) return <FeedSkeleton />
 
     return (
-        <div className='flex justify-center items-center mt-14'>
-            <div className='w-9/12 h-screen'>
-                <div className='flex my-14 gap-6 '>
+        <div className='flex justify-center items-start mt-14 min-h-screen bg-base-100 px-4 pb-10'>
+            {/* Responsive Container Widths:
+               - sm (Mobile): 100% width
+               - md (Tablet): 95% width
+               - lg/xl (Desktop): 9/12 (75%) width
+            */}
+            <div className='w-full md:w-[95%] lg:w-11/12 xl:w-9/12'>
 
-                    {/* Left Sidebar */}
-                    <div className='w-[30%]'>
+                {/* Flex Container for Columns */}
+                <div className='flex flex-col md:flex-row my-6 md:my-14 gap-4 lg:gap-6 justify-center items-start'>
+
+                    {/* Left Sidebar - Hidden on Mobile, Visible on Tablet+ */}
+                    <div className='hidden md:block md:w-[35%] lg:w-[28%] xl:w-[30%]'>
                         <SideProfile />
                     </div>
 
-                    {/* Main Content Area */}
-                    <div className="w-[36%] flex justify-center items-start">
+                    {/* Main Content Area - Full Width on Mobile, Adaptive on larger screens */}
+                    <div className="w-full sm:max-w-md md:max-w-none md:w-[60%] lg:w-[40%] xl:w-[36%] flex justify-center items-start mx-auto">
                         {feed && feed.length > 0 ? (
                             <Main user={feed[0]} />
                         ) : (
@@ -129,8 +136,8 @@ const Feed = () => {
                         )}
                     </div>
 
-                    {/* Right Sidebar */}
-                    <div className='w-[30%] h-[630px] overflow-y-auto'>
+                    {/* Right Sidebar - Hidden on Mobile/Tablet, Visible on Desktop+ */}
+                    <div className='hidden lg:block lg:w-[30%] xl:w-[30%] h-[630px] overflow-y-auto custom-scrollbar sticky top-24'>
                         <RightFeed />
                     </div>
                 </div>
