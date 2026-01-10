@@ -4,6 +4,7 @@ import { BsGithub, BsTwitter, BsLinkedin, BsInstagram, BsHeartFill } from 'react
 
 const Footer = () => {
     return (
+
         <footer className="bg-base-300 text-base-content pt-10 pb-6 mt-auto">
             <div className="max-w-7xl mx-auto px-4">
 

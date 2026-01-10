@@ -20,6 +20,7 @@ import { UserProvider } from './utils/helper/UserContext.jsx';
 import AiCoach from './components/ai/AiCoach.jsx';
 import Footer from './components/Footer.jsx';
 import Error404 from './components/Error404.jsx';
+import ResetPassword from './components/auth/ResetPassword.jsx';
 
 
 const ProtectedRoute = () => {
@@ -77,6 +78,8 @@ function AppContent() {
           <Route element={<PublicRoute />}>
             <Route path='/' element={<HomePage />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/reset-password/:token' element={<ResetPassword />} />
+
           </Route>
 
           {/* --- Protected Routes --- */}
