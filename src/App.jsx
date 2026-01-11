@@ -1,27 +1,33 @@
+import React, { Suspense, lazy } from 'react';
 import './App.css';
-import { BrowserRouter, Navigate, Route, Routes, Outlet, useLocation } from 'react-router-dom'; // 1. Import useLocation
+import { BrowserRouter, Navigate, Route, Routes, Outlet, useLocation } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './utils/redux/appStore';
-
-// Components
-import Feed from './components/Feed';
-import Login from './components/Login';
-import Profile from './components/Profile';
-import Connections from './components/Connections';
-import Request from './components/Request';
-import Navbar from './components/Navbar';
-import HomePage from './components/HomePage';
-import Chat from './components/Chat';
-import ChatPage from './components/chat/ChatPage';
-import PremiumList from './components/premium/PremiumList';
 import { UserProvider } from './utils/helper/UserContext.jsx';
-import AiCoach from './components/ai/AiCoach.jsx';
-import Footer from './components/Footer.jsx';
-import Error404 from './components/Error404.jsx';
-import ResetPassword from './components/auth/ResetPassword.jsx';
+import { CgSpinner } from "react-icons/cg";
 
+// --- Layout Components (Load Instantly) ---
+import Navbar from './components/Navbar';
+import Footer from './components/Footer.jsx';
+import HeartbeatLoader from './utils/ui/HeartbeatLoader.jsx';
+
+// --- Lazy Load Page Components ---
+// This splits your bundle into smaller chunks. 
+// The browser only downloads the code for the page the user is actually visiting.
+const HomePage = lazy(() => import('./components/HomePage'));
+const Login = lazy(() => import('./components/Login'));
+const ResetPassword = lazy(() => import('./components/auth/ResetPassword.jsx'));
+const Feed = lazy(() => import('./components/Feed'));
+const Profile = lazy(() => import('./components/Profile'));
+const Connections = lazy(() => import('./components/Connections'));
+const Request = lazy(() => import('./components/Request'));
+const ChatPage = lazy(() => import('./components/chat/ChatPage'));
+const Chat = lazy(() => import('./components/Chat'));
+const PremiumList = lazy(() => import('./components/premium/PremiumList'));
+const AiCoach = lazy(() => import('./components/ai/AiCoach.jsx'));
+const Error404 = lazy(() => import('./components/Error404.jsx'));
 
 const ProtectedRoute = () => {
   const userData = useSelector((state) => state.user.user);
@@ -46,13 +52,7 @@ function App() {
   );
 }
 
-// --- Modified Main Component ---
 function Main() {
-  // We need to move BrowserRouter up to App to use useLocation here, 
-  // OR we create a Layout component. 
-  // However, since we are inside Main() which is inside <BrowserRouter> in the original code,
-  // we need to restructure slightly to let Main use the hook.
-
   return (
     <BrowserRouter basename='/'>
       <AppContent />
@@ -60,11 +60,8 @@ function Main() {
   );
 }
 
-// Create a sub-component so it can use the router hooks (useLocation)
 function AppContent() {
   const location = useLocation();
-
-  // Logic: True if the path starts with "/chat" (covers /chat and /chat/:id)
   const isChatPage = location.pathname.startsWith('/chat');
 
   return (
@@ -72,39 +69,39 @@ function AppContent() {
       <Navbar />
 
       <div className="flex-grow">
-        <Routes>
+        {/* Suspense handles the loading state while the lazy component is fetched */}
+        <Suspense fallback={<HeartbeatLoader />}>
+          <Routes>
 
-          {/* --- Public Routes --- */}
-          <Route element={<PublicRoute />}>
-            <Route path='/' element={<HomePage />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/reset-password/:token' element={<ResetPassword />} />
+            {/* --- Public Routes --- */}
+            <Route element={<PublicRoute />}>
+              <Route path='/' element={<HomePage />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/reset-password/:token' element={<ResetPassword />} />
+            </Route>
 
-          </Route>
+            {/* --- Protected Routes --- */}
+            <Route element={<ProtectedRoute />}>
+              <Route path='/feed' element={<Feed />} />
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/connections' element={<Connections />} />
+              <Route path='/requests' element={<Request />} />
 
-          {/* --- Protected Routes --- */}
-          <Route element={<ProtectedRoute />}>
-            <Route path='/feed' element={<Feed />} />
-            <Route path='/profile' element={<Profile />} />
-            <Route path='/connections' element={<Connections />} />
-            <Route path='/requests' element={<Request />} />
+              {/* Chat Routes */}
+              <Route path='/chat' element={<ChatPage />} />
+              <Route path='/chat/:targetUserId' element={<Chat />} />
+              <Route path='/premiumList' element={<PremiumList />} />
+              <Route path='/ai-coach' element={<AiCoach />} />
+            </Route>
 
-            {/* Chat Routes */}
-            <Route path='/chat' element={<ChatPage />} />
-            <Route path='/chat/:targetUserId' element={<Chat />} />
-            <Route path='/premiumList' element={<PremiumList />} />
-            <Route path='/ai-coach' element={<AiCoach />} />
-          </Route>
+            {/* Fallback */}
+            <Route path="*" element={<Error404 />} />
 
-          {/* Fallback */}
-          <Route path="*" element={<Error404 />} />
-
-        </Routes>
+          </Routes>
+        </Suspense>
       </div>
 
-      {/* Conditionally Render Footer */}
       {!isChatPage && <Footer />}
-
     </div>
   );
 }

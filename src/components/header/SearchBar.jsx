@@ -8,11 +8,17 @@ import {
 import toast from 'react-hot-toast'
 import { Base_URL, DEFAULT_IMG } from '../../utils/helper/constant'
 
+// 1. Import the custom hook
+import useDebounce from '../../utils/hooks/useDebounce'
+
 const SearchBar = ({ userData }) => {
     const navigate = useNavigate()
     const searchRef = useRef(null)
 
     const [query, setQuery] = useState("")
+    // 2. Create the debounced version of the query
+    const debouncedQuery = useDebounce(query, 500) // 500ms delay
+
     const [suggestions, setSuggestions] = useState([])
     const [showDropdown, setShowDropdown] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -32,19 +38,26 @@ const SearchBar = ({ userData }) => {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
-    // Debounced API Call
+    // 3. EFFECT: Depends on 'debouncedQuery' instead of 'query'
+    // This effect runs ONLY when the user stops typing for 500ms
     useEffect(() => {
+        // Guard clause: If not premium, or query is empty, clear results and exit
         if (!userData.isPremium) return;
 
-        const timer = setTimeout(async () => {
-            if (query.trim()) {
+        const fetchSuggestions = async () => {
+            if (debouncedQuery.trim()) {
                 setLoading(true)
                 try {
-                    const res = await axios.post(`${Base_URL}/user/search`, { query }, { withCredentials: true })
+                    const res = await axios.post(
+                        `${Base_URL}/user/search`,
+                        { query: debouncedQuery },
+                        { withCredentials: true }
+                    )
                     setSuggestions(res?.data?.data || [])
                     setShowDropdown(true)
                 } catch (err) {
-                    console.error(err)
+                    console.error("Search Error:", err)
+                    setSuggestions([])
                 } finally {
                     setLoading(false)
                 }
@@ -52,11 +65,13 @@ const SearchBar = ({ userData }) => {
                 setSuggestions([])
                 setShowDropdown(false)
             }
-        }, 300)
+        };
 
-        return () => clearTimeout(timer)
-    }, [query, userData.isPremium])
+        fetchSuggestions();
 
+    }, [debouncedQuery, userData.isPremium]) // Only re-run when debounced value changes
+
+    // --- HANDLERS (Unchanged) ---
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             if (!userData.isPremium) return toast.error("Search is a Premium feature!", { icon: '💎' })
@@ -74,7 +89,7 @@ const SearchBar = ({ userData }) => {
             setSelectedUser(res?.data?.data)
             setShowModal(true)
             setShowDropdown(false)
-            setQuery("")
+            setQuery("") // Clear the input after selection if desired
         } catch (error) {
             console.error(error)
             toast.error("Could not fetch user details")
@@ -93,10 +108,8 @@ const SearchBar = ({ userData }) => {
                             : 'bg-base-200/50 cursor-not-allowed text-gray-400 border-transparent'
                             }`}
                         value={query}
-                        onChange={(e) => {
-                            setQuery(e.target.value)
-                            if (!showDropdown && userData.isPremium) setShowDropdown(true)
-                        }}
+                        // Update local state immediately so input is responsive
+                        onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => { if (suggestions.length > 0) setShowDropdown(true) }}
                         onKeyDown={handleKeyDown}
                         disabled={!userData.isPremium}
@@ -160,7 +173,7 @@ const SearchBar = ({ userData }) => {
                 </div>
             </div>
 
-            {/* --- USER DETAIL MODAL --- */}
+            {/* --- USER DETAIL MODAL (Unchanged) --- */}
             {showModal && selectedUser && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                     <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] overflow-y-auto custom-scrollbar">
