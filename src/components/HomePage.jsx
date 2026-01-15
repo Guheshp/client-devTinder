@@ -32,7 +32,7 @@ const HomePage = () => {
                     <div className="text-center lg:text-left space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-200 border border-base-300 text-xs font-bold uppercase tracking-wider text-gray-500">
                             <span className="w-2 h-2 bg-success rounded-full animate-ping"></span>
-                            Live: 500+ Developers Online
+
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-black leading-tight text-base-content">
