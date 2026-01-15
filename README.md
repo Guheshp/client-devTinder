@@ -4,8 +4,8 @@
 
 This repository contains the **React.js Frontend**, built for performance, scalability, and real-time interaction.
 
-🔗 **Live Demo:** [Insert Your Vercel Link Here]  
-🔗 **Backend Repo:** [Link to Backend Repo]
+🔗 **Live Demo: https://client-dev-tinder-smpb.vercel.app
+🔗 **Backend Repo: https://github.com/Guheshp/backend-devTinder
 
 ---
 
