@@ -1,17 +1,17 @@
-FROM node:22-alpine
-
-# Set working directory
+# Stage 1: Build the React App
+FROM node:20-alpine as build
 WORKDIR /app
-
-# Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
-
-# Copy the rest of the app
+RUN npm install
 COPY . .
+# This creates the 'dist' folder
+RUN npm run build 
 
-# Expose port used by Vite
-EXPOSE 7000
-
-# Start the app
-CMD ["npm", "run", "dev"]
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+# Copy the built files from Stage 1
+COPY --from=build /app/dist /usr/share/nginx/html
+# Copy our custom nginx config (we will check this next)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
