@@ -10,7 +10,7 @@ export const Base_URL =
 export const SOCKET_URL =
     location.hostname === "localhost"
         ? "http://localhost:7777"
-        : "https://api.mypeg.in";
+        : "/";
 
 
 export const BUTTON_IMAGE = "https://media.istockphoto.com/id/1198257563/vector/lets-connect.jpg?s=612x612&w=0&k=20&c=uivSAp20-gXK03lK_kZDD6GhwxzCiArpt8mQXgMSjz4="
