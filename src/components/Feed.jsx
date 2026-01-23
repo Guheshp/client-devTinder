@@ -7,19 +7,14 @@ import { BsHourglassSplit, BsGem, BsEmojiFrown } from "react-icons/bs"
 
 import SideProfile from './SideProfile'
 import RightFeed from './RightFeed'
-
-
 import FeedSkeleton from './skeleton/FeedSkeleton'
 import Main from './feed/Main'
 import { Link } from 'react-router-dom'
 import FeedCardSkeleton from './skeleton/FeedCardSkeleton'
 
-
-
 const Feed = () => {
     const dispatch = useDispatch()
-    const feed = useSelector((store) => store.feed.feed)
-    // 1. Get the logged-in user from Redux to check premium status
+    const feed = useSelector((store) => store.feed.feed) || [] // Ensure it's always an array
     const user = useSelector((store) => store.user.user)
 
     // --- State ---
@@ -27,13 +22,19 @@ const Feed = () => {
     const [params, setParams] = useState({ page: 1, limit: 10 })
     const [isLimitReached, setIsLimitReached] = useState(false)
 
+    // 🔥 NEW: Stop Flag to prevent infinite calls
+    const [noMoreData, setNoMoreData] = useState(false)
+
     // 2. Dynamic Limit Logic
     const isPremium = user?.isPremium || false;
     const MAX_PROFILES = isPremium ? 200 : 50;
 
     // --- 1. The Fetch Function ---
     const getFeed = async () => {
-        // Stop if we have already fetched enough profiles
+        // 🛑 STOP: If we already know DB is empty, or Limit reached, or currently loading
+        if (noMoreData || isLimitReached || loading) return;
+
+        // 🛑 STOP: Check Daily Limit
         if ((params.page - 1) * params.limit >= MAX_PROFILES) {
             setIsLimitReached(true)
             return
@@ -46,7 +47,15 @@ const Feed = () => {
                 params,
                 { withCredentials: true }
             )
+
             const data = res?.data?.data || []
+
+            // ✅ LOGIC FIX: If we asked for 10 but got less (e.g. 2 or 0), 
+            // it means the DB has run out of data.
+            if (data.length < params.limit) {
+                setNoMoreData(true)
+            }
+
             dispatch(addFeed(data))
         } catch (error) {
             console.error("Feed Fetch Error:", error)
@@ -57,47 +66,49 @@ const Feed = () => {
 
     // --- 2. Reactive Fetching ---
     useEffect(() => {
-        getFeed()
-    }, [params])
+        // Only fetch if we haven't determined there is no more data
+        if (!noMoreData) {
+            getFeed()
+        }
+    }, [params]) // Remove other dependencies to prevent loops
 
     // --- 3. Watch Feed to Trigger Next Page ---
     useEffect(() => {
-        if (feed && feed.length === 0 && !loading && !isLimitReached) {
+        // Only go to next page if:
+        // 1. Feed is empty
+        // 2. Not currently loading
+        // 3. Haven't reached daily limit
+        // 4. 🔥 We haven't reached the end of the DB yet
+        if (feed.length === 0 && !loading && !isLimitReached && !noMoreData) {
             setParams(prev => ({
+                ...prev,
                 page: prev.page + 1,
-                limit: 10
             }))
         }
-    }, [feed])
+    }, [feed, loading, isLimitReached, noMoreData])
 
     // --- RENDER ---
+    // If it's the first page load, show Skeleton
     if (loading && params.page === 1) return <FeedSkeleton />
 
     return (
         <div className='flex justify-center items-start mt-14 min-h-screen bg-base-100 px-4 pb-10'>
-            {/* Responsive Container Widths:
-               - sm (Mobile): 100% width
-               - md (Tablet): 95% width
-               - lg/xl (Desktop): 9/12 (75%) width
-            */}
             <div className='w-full md:w-[95%] lg:w-11/12 xl:w-9/12'>
-
-                {/* Flex Container for Columns */}
                 <div className='flex flex-col md:flex-row my-6 md:my-14 gap-4 lg:gap-6 justify-center items-start'>
 
-                    {/* Left Sidebar - Hidden on Mobile, Visible on Tablet+ */}
+                    {/* Left Sidebar */}
                     <div className='hidden md:block md:w-[35%] lg:w-[28%] xl:w-[30%]'>
                         <SideProfile />
                     </div>
 
-                    {/* Main Content Area - Full Width on Mobile, Adaptive on larger screens */}
+                    {/* Main Content */}
                     <div className="w-full sm:max-w-md md:max-w-none md:w-[60%] lg:w-[40%] xl:w-[36%] flex justify-center items-start mx-auto">
                         {feed && feed.length > 0 ? (
                             <Main user={feed[0]} />
                         ) : (
                             <div className="w-full">
+                                {/* PRIORITY 1: Daily Limit Reached */}
                                 {isLimitReached ? (
-                                    // LIMIT REACHED UI
                                     <div className="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-warning text-center">
                                         <div className="bg-warning/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <BsHourglassSplit className="text-3xl text-warning" />
@@ -106,37 +117,34 @@ const Feed = () => {
                                         <p className="text-gray-600 mt-2">
                                             You've viewed {MAX_PROFILES} profiles today.
                                         </p>
-
-                                        {/* Only show Upgrade button if user is NOT premium */}
-                                        {!isPremium ? (
+                                        {!isPremium && (
                                             <div className="space-y-3 mt-4">
-                                                <p className="text-sm text-gray-500">Want to see more?</p>
                                                 <Link to="/premium" className="btn btn-primary w-full text-white gap-2">
                                                     <BsGem /> Upgrade for 200/day
                                                 </Link>
                                             </div>
-                                        ) : (
-                                            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-500">
-                                                Come back tomorrow for more connections!
-                                            </div>
                                         )}
                                     </div>
-                                ) : loading ? (
-                                    // LOADING NEXT BATCH (Shimmer UI)
-                                    <FeedCardSkeleton />
-                                ) : (
-                                    // EMPTY DB UI
-                                    <div className="bg-base-300 p-6 rounded-xl shadow w-full text-center">
-                                        <BsEmojiFrown className="text-4xl text-gray-400 mx-auto mb-3" />
-                                        <h2 className="text-xl font-semibold">No more profiles</h2>
-                                        <p className="text-gray-600 mt-2">You've seen everyone available!</p>
-                                    </div>
-                                )}
+                                )
+                                    // PRIORITY 2: Loading State (Waiting for next page)
+                                    : loading ? (
+                                        <FeedCardSkeleton />
+                                    )
+                                        // PRIORITY 3: No More Data (DB Empty)
+                                        : noMoreData ? (
+                                            <div className="bg-base-200 p-8 rounded-xl shadow-inner w-full text-center border border-base-300">
+                                                <BsEmojiFrown className="text-4xl text-gray-400 mx-auto mb-3" />
+                                                <h2 className="text-xl font-bold text-gray-600">No more profiles</h2>
+                                                <p className="text-gray-500 mt-1 text-sm">You've seen everyone available!</p>
+                                            </div>
+                                        )
+                                            // FALLBACK
+                                            : null}
                             </div>
                         )}
                     </div>
 
-                    {/* Right Sidebar - Hidden on Mobile/Tablet, Visible on Desktop+ */}
+                    {/* Right Sidebar */}
                     <div className='hidden lg:block lg:w-[30%] xl:w-[30%] h-[630px] overflow-y-auto custom-scrollbar sticky top-24'>
                         <RightFeed />
                     </div>
