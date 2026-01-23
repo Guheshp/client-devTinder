@@ -13,37 +13,59 @@ const ProfileStrength = () => {
     // ---------------- STATE: 100% COMPLETE ----------------
     if (completion === 100) {
         if (isPremium) {
-            // CASE A: 100% + Premium (Reward View)
             return (
-                <div className="card w-full bg-gradient-to-br from-primary/10 to-blue-50 shadow-md border border-primary/20">
-                    <div className="card-body p-4">
-                        <div className="flex justify-between items-start">
-                            <h3 className="card-title text-sm font-bold flex items-center gap-2 text-primary">
-                                <BsStars className="text-yellow-500 text-lg" />
-                                All-Star Profile!
+                <div className="card w-full bg-base-100 shadow-md border border-primary/20 overflow-hidden">
+                    {/* Gradient Overlay using Primary color (Works in Dark/Light) */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
+
+                    <div className="card-body p-3 relative z-10">
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-1">
+                            <h3 className="text-xs font-extrabold flex items-center gap-1.5 text-primary uppercase tracking-wide">
+                                <BsStars className="text-warning text-sm" />
+                                All-Star Profile
                             </h3>
-                            <div className="badge badge-warning text-[10px] font-bold gap-1 uppercase tracking-wide">
-                                <BsGem /> PREMIUM
-                            </div>
+
+                            {/* Active Badge */}
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-success/20 bg-success/10 text-success">
+                                ACTIVE
+                            </span>
                         </div>
 
-                        <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                            Your profile is optimized. You have <span className="font-bold text-gray-800">3x visibility</span> & top ranking.
+                        {/* Description Text */}
+                        <p className="text-[11px] text-base-content/70 font-medium">
+                            Profile optimized. <span className="font-bold text-base-content">3x visibility</span>.
                         </p>
 
-                        <div className="flex gap-2 mt-3 items-center bg-white p-2.5 rounded-lg border border-base-200 shadow-sm">
-                            <div className="p-1.5 bg-green-100 rounded-full text-green-600 shrink-0">
-                                <BsRocketTakeoff />
+                        {/* Inner Stat Box */}
+                        <div className="flex items-center gap-3 mt-2 bg-base-100 px-2 py-2 rounded-lg border border-base-200 shadow-sm">
+                            {/* Rocket Icon */}
+                            <div className="p-1.5 bg-success/10 rounded-full text-success ring-1 ring-success/20">
+                                <BsRocketTakeoff className="text-xs" />
                             </div>
-                            <div className="text-xs">
-                                <span className="font-bold block text-gray-800">Boost Active</span>
-                                <span className="text-gray-400 text-[10px]">Ranking #1 in search.</span>
+
+                            {/* Stats */}
+                            <div className="flex-1">
+                                <p className="text-[11px] font-bold text-base-content leading-none mb-0.5">
+                                    Boost Active
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <p className="text-[10px] text-base-content/50 font-medium">
+                                        Ranking Top 1%
+                                    </p>
+                                    {/* Animated Pulse Dot */}
+                                    <span className="flex h-2 w-2 relative">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            )
-        } else {
+            );
+        }
+        else {
             // CASE B: 100% + Free Tier (Informational View - NO BUTTON)
             return (
                 <div className="card w-full bg-base-100 shadow-md border border-base-200">

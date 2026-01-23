@@ -2,6 +2,7 @@ import React from "react";
 import { useUser } from "../../utils/helper/UserContext";
 import PremiumStatusCard from "./PremiumStatusCard";
 import UpgradeCard from "./UpgradeCard";
+import RewindPromoCard from "../rewind/RewindPromoCard";
 
 const Premium = () => {
     const user = useUser();
@@ -13,7 +14,10 @@ const Premium = () => {
         <div className="w-full">
             {user.isPremium ? (
                 // 1. If Premium -> Show Status + AI Link
-                <PremiumStatusCard user={user} />
+                <>
+                    <PremiumStatusCard user={user} />
+                    <RewindPromoCard />
+                </>
             ) : (
                 // 2. If Free -> Show Upgrade CTA + Modal
                 <UpgradeCard />
