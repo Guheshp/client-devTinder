@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { FaCheck, FaRobot, FaStar, FaCrown, FaLock } from 'react-icons/fa';
+import { FaCheck, FaRobot, FaStar, FaCrown, FaLock, FaUndo } from 'react-icons/fa';
 import { Base_URL } from '../../utils/helper/constant';
 import PremiumSkeleton from '../skeleton/PremiumSkeleton';
 
@@ -14,7 +14,6 @@ const PremiumList = () => {
             const res = await axios.post(Base_URL + '/payment/premium/verify', {}, {
                 withCredentials: true
             });
-            console.log(res?.data);
             setIsPremium(!!res?.data?.isPremium);
         } catch (error) {
             console.error('Payment verification failed:', error);
@@ -130,15 +129,24 @@ const PremiumList = () => {
                         </div>
 
                         <ul className="space-y-4 flex-1">
-                            {/* AI Feature Added Here */}
+                            {/* AI Feature */}
                             <li className="flex items-start gap-3 bg-base-200 p-2 rounded-lg">
                                 <div className="mt-1 text-yellow-500"><FaRobot /></div>
                                 <span className="text-base-content font-bold">AI Career Coach</span>
                             </li>
+
+                            {/* Existing Features */}
                             <li className="flex items-start gap-3">
                                 <FaCheck className="text-blue-500 mt-1 flex-shrink-0" />
                                 <span className="text-base-content/80 font-medium">Blue Verified Badge</span>
                             </li>
+
+                            {/* 🔥 NEW FEATURE ADDED HERE */}
+                            <li className="flex items-start gap-3">
+                                <FaUndo className="text-orange-500 mt-1 flex-shrink-0" />
+                                <span className="text-base-content/80 font-medium">View & Restore Ignored Profiles</span>
+                            </li>
+
                             <li className="flex items-start gap-3">
                                 <FaCheck className="text-green-500 mt-1 flex-shrink-0" />
                                 <span className="text-base-content/80">100 Connection Requests Per Day</span>

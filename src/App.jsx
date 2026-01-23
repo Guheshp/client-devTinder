@@ -6,29 +6,31 @@ import { Toaster } from 'react-hot-toast';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './utils/redux/appStore';
 import { UserProvider } from './utils/helper/UserContext.jsx';
-import { CgSpinner } from "react-icons/cg";
 
-// --- Layout Components (Load Instantly) ---
+// --- UI Components ---
 import Navbar from './components/Navbar';
 import Footer from './components/Footer.jsx';
-import HeartbeatLoader from './utils/ui/HeartbeatLoader.jsx';
+import TopBarLoader from './utils/ui/TopBarLoader.jsx'; // The new subtle loader
 
-// --- Lazy Load Page Components ---
-// This splits your bundle into smaller chunks. 
-// The browser only downloads the code for the page the user is actually visiting.
-const HomePage = lazy(() => import('./components/HomePage'));
-const Login = lazy(() => import('./components/Login'));
-const ResetPassword = lazy(() => import('./components/auth/ResetPassword.jsx'));
-const Feed = lazy(() => import('./components/Feed'));
-const Profile = lazy(() => import('./components/Profile'));
+// --- 1. EAGER LOAD CRITICAL PAGES (Instant Navigation) ---
+// These are fetched immediately so the user never sees a loading spinner for them.
+import HomePage from './components/HomePage';
+import Login from './components/Login';
+import Feed from './components/Feed';
+import Profile from './components/Profile';
+import ChatPage from './components/chat/ChatPage';
+import Chat from './components/Chat';
+
+// --- 2. LAZY LOAD HEAVY/RARE PAGES (Bundle Splitting) ---
+// These are only downloaded when the user actually clicks on them.
 const Connections = lazy(() => import('./components/Connections'));
 const Request = lazy(() => import('./components/Request'));
-const ChatPage = lazy(() => import('./components/chat/ChatPage'));
-const Chat = lazy(() => import('./components/Chat'));
 const PremiumList = lazy(() => import('./components/premium/PremiumList'));
 const AiCoach = lazy(() => import('./components/ai/AiCoach.jsx'));
+const ResetPassword = lazy(() => import('./components/auth/ResetPassword.jsx'));
 const Error404 = lazy(() => import('./components/Error404.jsx'));
 
+// --- Route Guards ---
 const ProtectedRoute = () => {
   const userData = useSelector((state) => state.user.user);
   return userData ? <Outlet /> : <Navigate to="/login" replace />;
@@ -68,9 +70,12 @@ function AppContent() {
     <div className="flex flex-col min-h-screen bg-base-200">
       <Navbar />
 
-      <div className="flex-grow">
-        {/* Suspense handles the loading state while the lazy component is fetched */}
-        <Suspense fallback={<HeartbeatLoader />}>
+      <div className="flex-grow relative">
+        {/* Use TopBarLoader here. 
+            It only shows up if the user visits a 'lazy' page (like AiCoach).
+            For Feed/Profile/Chat, this Suspense will NOT trigger (because they are eager).
+        */}
+        <Suspense fallback={<TopBarLoader />}>
           <Routes>
 
             {/* --- Public Routes --- */}
@@ -82,14 +87,17 @@ function AppContent() {
 
             {/* --- Protected Routes --- */}
             <Route element={<ProtectedRoute />}>
+              {/* Critical Pages (No Loader) */}
               <Route path='/feed' element={<Feed />} />
               <Route path='/profile' element={<Profile />} />
-              <Route path='/connections' element={<Connections />} />
-              <Route path='/requests' element={<Request />} />
 
-              {/* Chat Routes */}
+              {/* Chat Pages (No Loader) */}
               <Route path='/chat' element={<ChatPage />} />
               <Route path='/chat/:targetUserId' element={<Chat />} />
+
+              {/* Heavy/Secondary Pages (Shows TopBarLoader on first visit) */}
+              <Route path='/connections' element={<Connections />} />
+              <Route path='/requests' element={<Request />} />
               <Route path='/premiumList' element={<PremiumList />} />
               <Route path='/ai-coach' element={<AiCoach />} />
             </Route>
