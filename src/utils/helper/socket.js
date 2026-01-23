@@ -1,23 +1,11 @@
 import { io } from "socket.io-client";
-import { Base_URL } from "./constant";
-
-let socket; // 🔥 SINGLE INSTANCE
+import { SOCKET_URL } from "./constant"; // 👈 Import SOCKET_URL, not Base_URL
 
 export const createSocketConnection = () => {
-    if (!socket) {
-        if (
-            location.hostname === 'localhost' ||
-            location.hostname === '127.0.0.1'
-        ) {
-            socket = io(Base_URL, {
-                withCredentials: true,
-            });
-        } else {
-            socket = io('/', {
-                path: '/socket.io',
-            });
-        }
-    }
+    // ✅ Always return a NEW connection. 
+    // React's useEffect will handle disconnecting it when you leave the page.
 
-    return socket;
+    return io(SOCKET_URL, {
+        withCredentials: true,
+    });
 };

@@ -11,7 +11,10 @@ import toast from 'react-hot-toast'
 
 const ChatWindow = ({ targetUserId, onNewMessage }) => {
     const user = useSelector(state => state.user.user)
-    const socketRef = useRef(null)
+
+    // ✅ 1. Use state for socket to ensure re-renders when connected
+    const [socket, setSocket] = useState(null)
+
     const bottomRef = useRef(null)
 
     const [message, setMessage] = useState('')
@@ -21,9 +24,9 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
 
     // --- NEW STATE FOR MODAL & CONNECTION ---
     const [showModal, setShowModal] = useState(false)
-    const [connectionStatus, setConnectionStatus] = useState('unknown') // 'unknown', 'connected', 'not_connected', 'pending'
+    const [connectionStatus, setConnectionStatus] = useState('unknown')
 
-    /* ---------------- FETCH CHAT ---------------- */
+    /* ---------------- FETCH CHAT HISTORY ---------------- */
     useEffect(() => {
         if (!targetUserId || !user?._id) return
 
@@ -39,61 +42,69 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
                 }))
                 setMessages(formatted)
             })
+            .catch(err => console.error("Chat fetch error", err))
     }, [targetUserId, user?._id])
 
-    /* ---------------- FETCH TARGET USER & CHECK CONNECTION ---------------- */
+    /* ---------------- FETCH USER & STATUS ---------------- */
     useEffect(() => {
         if (!targetUserId) return
 
         const fetchData = async () => {
             try {
-                // 1. Fetch User Data
                 const userRes = await axios.get(`${Base_URL}/user/${targetUserId}`, { withCredentials: true })
                 setTargetUser(userRes.data.data)
 
-                // 2. Check Connection Status (Using your new API)
-                // This determines if the button should be "Connect" or "Connected"
                 const connectionRes = await axios.get(
                     `${Base_URL}/chat/is-connected/${targetUserId}`,
                     { withCredentials: true }
                 )
-                console.log('connectionRes', connectionRes)
-
                 if (connectionRes.data.success) {
                     setConnectionStatus(connectionRes.data.isConnected ? 'connected' : 'not_connected')
                 }
-
             } catch (error) {
-                console.error("Error fetching chat details:", error)
-                // If error occurs, we assume not connected so the user can try again
+                console.error("Error fetching details:", error)
                 setConnectionStatus('not_connected')
             }
         }
         fetchData()
     }, [targetUserId])
 
-    /* ---------------- SOCKET INIT ---------------- */
+    /* ---------------- SOCKET INITIALIZATION ---------------- */
     useEffect(() => {
         if (!user?._id) return
-        socketRef.current = createSocketConnection()
-        socketRef.current.emit('userOnline', user._id)
-        socketRef.current.on('userStatus', ({ userId, online }) => {
+
+        // ✅ Initialize Socket and set it to State
+        const socketInstance = createSocketConnection()
+        setSocket(socketInstance)
+
+        socketInstance.emit('userOnline', user._id)
+
+        socketInstance.on('userStatus', ({ userId, online }) => {
             setOnlineUsers(prev => {
                 const updated = new Set(prev)
                 online ? updated.add(userId) : updated.delete(userId)
                 return updated
             })
         })
-        return () => socketRef.current.disconnect()
+
+        return () => {
+            socketInstance.disconnect()
+        }
     }, [user?._id])
 
-    /* ---------------- JOIN CHAT ---------------- */
+    /* ---------------- JOIN / LEAVE ROOM & LISTEN ---------------- */
     useEffect(() => {
-        if (!socketRef.current || !targetUserId || !user?._id) return
+        // ✅ Only run if socket is ready (state is set)
+        if (!socket || !targetUserId || !user?._id) return
 
-        socketRef.current.emit('joinChat', { userId: user._id, targetUserId })
+        // 1. Join
+        socket.emit('joinChat', { userId: user._id, targetUserId })
 
+        // 2. Listen for messages
         const handleReceiveMessage = (msg) => {
+            // Safety check: Is this message for the current chat?
+            if (msg.senderId !== targetUserId && msg.senderId !== user._id) return
+
             setMessages(prev => [
                 ...prev,
                 {
@@ -104,10 +115,11 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
                     sender: msg.senderId === user._id ? 'me' : 'other'
                 }
             ])
-            onNewMessage(msg.senderId, msg.text)
+            if (onNewMessage) onNewMessage(msg.senderId, msg.text)
 
+            // Mark seen immediately if it's from the other person
             if (msg.senderId !== user._id) {
-                socketRef.current.emit('markSeen', { userId: user._id, targetUserId })
+                socket.emit('markSeen', { userId: user._id, targetUserId })
             }
         }
 
@@ -115,30 +127,32 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
             setMessages(prev => prev.map(m => (m.sender === 'me' ? { ...m, seen: true } : m)))
         }
 
-        socketRef.current.on('receiveMessage', handleReceiveMessage)
-        socketRef.current.on('messagesSeen', handleMessagesSeen)
+        socket.on('receiveMessage', handleReceiveMessage)
+        socket.on('messagesSeen', handleMessagesSeen)
 
+        // 3. Cleanup
         return () => {
-            socketRef.current.off('receiveMessage', handleReceiveMessage)
-            socketRef.current.off('messagesSeen', handleMessagesSeen)
+            // ✅ LEAVE CHAT to prevent leaks
+            socket.emit('leaveChat', { userId: user._id, targetUserId })
+            socket.off('receiveMessage', handleReceiveMessage)
+            socket.off('messagesSeen', handleMessagesSeen)
         }
-    }, [targetUserId, user?._id])
+    }, [socket, targetUserId, user?._id]) // Dependency on `socket` ensures this runs after connection
 
-    /* ---------------- MARK SEEN & SCROLL ---------------- */
-    useEffect(() => {
-        if (!socketRef.current || messages.length === 0) return
-        socketRef.current.emit('markSeen', { userId: user._id, targetUserId })
-    }, [messages])
-
+    /* ---------------- SCROLL TO BOTTOM ---------------- */
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
     /* ---------------- ACTIONS ---------------- */
     const sendMessage = () => {
-        if (!message.trim()) return
-        socketRef.current.emit('sendMessage', { userId: user._id, targetUserId, text: message })
-        onNewMessage(targetUserId, message)
+        if (!message.trim() || !socket) return
+
+        socket.emit('sendMessage', { userId: user._id, targetUserId, text: message })
+
+        // Optional: Optimistic update (removed to prevent duplicates if server echoes)
+        // onNewMessage(targetUserId, message) 
+
         setMessage('')
     }
 
@@ -146,19 +160,17 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
         if (e.key === 'Enter') sendMessage()
     }
 
-    // --- NEW: SEND CONNECTION REQUEST ---
     const sendConnectionRequest = async () => {
         try {
             await axios.post(`${Base_URL}/request/send/${targetUserId}`, {}, { withCredentials: true })
             toast.success("Connection Request Sent!")
             setConnectionStatus('pending')
         } catch (error) {
-            // If error says "already exists", we mark as pending/connected
             if (error.response?.data?.message?.includes("already")) {
                 toast.error("Request already sent or connected")
                 setConnectionStatus('pending')
             } else {
-                toast.error("Unable to send request. Please search for the user by name to connect In Home Page.");
+                toast.error("Unable to connect. Try searching globally.");
             }
         }
     }
@@ -166,10 +178,10 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
     return (
         <div className="flex flex-col h-full w-full bg-base-100 relative">
 
-            {/* --- HEADER (CLICKABLE) --- */}
+            {/* --- HEADER --- */}
             <div
                 onClick={() => setShowModal(true)}
-                className="flex items-center justify-between px-4 py-3  border-b shadow-sm z-20 cursor-pointer hover:bg-base-300 transition-colors"
+                className="flex items-center justify-between px-4 py-3 border-b shadow-sm z-20 cursor-pointer hover:bg-base-300 transition-colors"
             >
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -248,7 +260,7 @@ const ChatWindow = ({ targetUserId, onNewMessage }) => {
                 <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                     <div className="bg-base-100 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden relative">
 
-                        {/* Modal Header / Banner */}
+                        {/* Modal Header */}
                         <div className="h-24 bg-gradient-to-r from-primary to-purple-600 relative">
                             <button
                                 onClick={() => setShowModal(false)}

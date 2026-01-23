@@ -163,7 +163,9 @@ const FeedCardPreview = ({
                         <button className="btn btn-outline btn-error btn-sm px-3 md:px-5 rounded-full hover:scale-105 transition-transform" onClick={(e) => handleActionClick(e, onIgnore)}>
                             Ignore
                         </button>
-                        <button className="btn btn-primary btn-sm px-3 md:px-5 rounded-full text-white hover:scale-105 transition-transform" onClick={(e) => handleActionClick(e, onConnect)}>
+                        <button
+                            className="btn btn-primary btn-sm px-3 md:px-5 rounded-full text-white hover:scale-105 transition-transform"
+                            onClick={(e) => handleActionClick(e, onConnect)}>
                             Connect
                         </button>
                     </div>

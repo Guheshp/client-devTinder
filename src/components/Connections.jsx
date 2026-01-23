@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { BsPeopleFill } from "react-icons/bs";
+import { BsPeopleFill, BsPersonX } from "react-icons/bs";
 
 import { Base_URL } from '../utils/helper/constant'
 import { addConnection } from '../utils/redux/slices/connectionSlice'
@@ -66,13 +66,18 @@ const Connections = () => {
 
     if (!connectionData || connectionData.length === 0) {
         return (
-            <div className="min-h-screen bg-base-200 flex flex-col justify-center items-center p-4">
-                <div className="bg-white p-8 rounded-2xl shadow-lg text-center max-w-md">
-                    <div className="bg-primary/10 p-4 rounded-full inline-block mb-4">
-                        <BsPeopleFill className="text-5xl text-primary" />
+            <div className='min-h-screen flex items-center justify-center bg-base-200 pt-16'>
+                <div className='text-center p-8'>
+                    <div className="bg-gray-100 p-6 rounded-full inline-block mb-4">
+                        <BsPersonX className="text-6xl text-gray-400" />
                     </div>
-                    <h1 className="text-2xl font-bold">No Connections Yet</h1>
-                    <Link to="/feed" className="btn btn-primary w-full text-white mt-4">Find Connections</Link>
+                    <h1 className='text-2xl font-bold text-gray-700'>No Connection Yet</h1>
+                    <p className='text-gray-500 mt-2 max-w-md mx-auto'>
+                        It looks quiet here. Keep exploring the feed to connect with more developers!
+                    </p>
+                    <Link to="/feed" className='btn btn-primary mt-6 text-white px-8'>
+                        Explore Feed
+                    </Link>
                 </div>
             </div>
         )

@@ -133,7 +133,8 @@ const FeedCardModal = ({
                     </button>
                     <div className="flex gap-3 w-full sm:w-auto">
                         <button className="btn btn-outline btn-error btn-sm sm:btn-md flex-1 sm:flex-none" onClick={() => { onIgnore(); closeModal(); }}>Ignore</button>
-                        <button className="btn btn-primary text-white btn-sm sm:btn-md flex-1 sm:flex-none px-8" onClick={() => { onConnect(); closeModal(); }}>Connect</button>
+                        <button
+                            className="btn btn-primary text-white btn-sm sm:btn-md flex-1 sm:flex-none px-8" onClick={() => { onConnect(); closeModal(); }}>Connect</button>
                     </div>
                 </div>
             </div>

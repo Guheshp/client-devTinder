@@ -3,7 +3,7 @@ import React from 'react'
 // 1. Add 'error' to props
 const SelectField = ({ label, name, register, options, required, error }) => {
     return (
-        <label className="form-control w-full max-w-xs my-0">
+        <label className="form-control w-full max-w-md my-0">
             <div className="label">
                 <span className="label-text">
                     {label} {required && <span className="text-red-500">*</span>}
@@ -14,7 +14,7 @@ const SelectField = ({ label, name, register, options, required, error }) => {
                 // 2. Pass a custom message if 'required' is true
                 {...register(name, { required: required ? `${label} is required` : false })}
                 // 3. Add 'select-error' class if error exists (DaisyUI standard)
-                className={`select select-bordered w-full max-w-xs ${error ? "select-error" : ""}`}
+                className={`select select-bordered w-full max-w-md ${error ? "select-error" : ""}`}
             >
                 <option value="">Select</option>
                 {options.map(opt => (
